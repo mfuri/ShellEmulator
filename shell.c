@@ -4,11 +4,18 @@
 
 int main(int argc, char const *argv[])
 {
-	char * input;
+	size_t size = 10;
+	char * buffer;
 	do
 	{
-		scanf("%s\n", input);
+		char * user = getenv("USER");
+
+		printf("%s",user);
+
+		buffer = (char *) malloc (size);
+
+		getline (&buffer, &size, stdin);
 	}
-	while (strcmp(input, "exit") != 0);
+	while (strcmp(buffer, "exit") != 0);
 	return 0;
 }
