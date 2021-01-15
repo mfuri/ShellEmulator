@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <malloc.h>
 #include <unistd.h>
 
 void PrintPrompt();
@@ -25,12 +24,14 @@ int main(int argc, char const *argv[])
 void PrintPrompt()
 {
 	int host;
-		char hostname[256];
-		char * user = getenv("USER");
-		host = gethostname(hostname, sizeof(hostname));
+	char hostname[256];
+	char * user = getenv("USER");
+	char * pwd = getenv("PWD");
+	host = gethostname(hostname, sizeof(hostname));
+	
 		
-		if (host == -1)
-			printf("error getting hostname\n");
+	if (host == -1)
+		printf("error getting hostname\n");
 
-		printf("%s@[%s] > ",user,hostname);
+	printf("%s@%s : %s > ",user,hostname,pwd);
 }
