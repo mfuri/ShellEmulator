@@ -18,7 +18,7 @@ void echo(tokenlist *tokens){
 
         }
     
-    for (int i=0;i<tokens->size;i++){ 
+    for (int i=1;i<tokens->size;i++){ 
         printf("%s ",tokens->items[i]);
     }
   }
