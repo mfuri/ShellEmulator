@@ -12,10 +12,10 @@ int main(int argc, char const *argv[])
 	do
 	{
 		PrintPrompt();
+		buffer=get_input();
+		//buffer = (char *) malloc (size);
 
-		buffer = (char *) malloc (size);
-
-		getline (&buffer, &size, stdin);
+		//getline (&buffer, &size, stdin);
 	}
 	while (strcmp(buffer, "exit") != 0);
 	return 0;
