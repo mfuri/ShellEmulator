@@ -14,8 +14,16 @@ int main(int argc, char const *argv[])
 		PrintPrompt();
 		buffer=get_input();
 		//buffer = (char *) malloc (size);
-
 		//getline (&buffer, &size, stdin);
+		
+		
+		//below is commented out since we don't have header files yet
+		
+		//tokenlist *tokens = get_tokens(buffer);  
+	
+
+        	//fnptr cmd = get_command(tokens);
+        	//cmd(tokens);
 	}
 	while (strcmp(buffer, "exit") != 0);
 	return 0;
