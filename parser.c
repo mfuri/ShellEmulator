@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 typedef struct {
 	int size;
@@ -13,11 +14,13 @@ tokenlist *get_tokens(char *input);
 tokenlist *new_tokenlist(void);
 void add_token(tokenlist *tokens, char *item);
 void free_tokens(tokenlist *tokens);
+void PrintPrompt();
+
 
 int main()
 {
 	while (1) {
-		printf("> ");
+		PrintPrompt();
 
 		/* input contains the whole command
 		 * tokens contains substrings from input split by spaces
@@ -110,4 +113,19 @@ void free_tokens(tokenlist *tokens)
 		free(tokens->items[i]);
 
 	free(tokens);
+}
+
+void PrintPrompt()
+{
+	int host;
+	char hostname[256];
+	char * user = getenv("USER");
+	char * pwd = getenv("PWD");
+	host = gethostname(hostname, sizeof(hostname));
+	
+		
+	if (host == -1)
+		printf("error getting hostname\n");
+
+	printf("%s@%s : %s > ",user,hostname,pwd);
 }
