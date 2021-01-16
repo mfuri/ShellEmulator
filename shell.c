@@ -20,6 +20,9 @@ int main(int argc, char const *argv[])
 		//below is commented out since we don't have header files yet
 		
 		//tokenlist *tokens = get_tokens(buffer);  
+		
+		//tilda_expand(tokens);
+
 	
 
         	//fnptr cmd = get_command(tokens);
