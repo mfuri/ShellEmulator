@@ -15,6 +15,7 @@ tokenlist *new_tokenlist(void);
 void add_token(tokenlist *tokens, char *item);
 void free_tokens(tokenlist *tokens);
 void PrintPrompt();
+char * EnvExpand(char * input);
 
 
 int main()
@@ -128,4 +129,15 @@ void PrintPrompt()
 		printf("error getting hostname\n");
 
 	printf("%s@%s : %s > ",user,hostname,pwd);
+}
+
+char * EnvExpand(char * input)
+{
+	char * output;
+	if (input[0] == '$')
+	{
+		input++;
+		output = getenv(input);
+	}
+	return output;
 }
