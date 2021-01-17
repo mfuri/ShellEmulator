@@ -162,8 +162,10 @@ bool is_Path(char * input)
 	if (result == 0)
 		return true;
 	else
+	{
+		printf("Bash: command not found: %s\n", inout);
 		return false;
-	
+	}
 	//while (token != NULL)
 	//{
 		
