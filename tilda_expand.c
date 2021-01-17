@@ -17,7 +17,8 @@ void tilda_expand(tokenlist *tokens){               //expands tokens starting wi
             strcpy(tokens->items[i],home);
  
             strcat(tokens->items[i],dir);
-
+            
+            free(dir);
         }
     }
 }
