@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <stdbool.h>
 
 typedef struct {
 	int size;
@@ -16,6 +17,7 @@ void add_token(tokenlist *tokens, char *item);
 void free_tokens(tokenlist *tokens);
 void PrintPrompt();
 char * EnvExpand(char * input);
+bool is_Path(char *);
 
 
 int main()
@@ -34,7 +36,7 @@ int main()
 		for (int i = 0; i < tokens->size; i++) {
 			printf("token %d: (%s)\n", i, tokens->items[i]);
 		}
-
+		
 		free(input);
 		free_tokens(tokens);
 	}
@@ -131,13 +133,41 @@ void PrintPrompt()
 	printf("%s@%s : %s > ",user,hostname,pwd);
 }
 
-char * EnvExpand(char * input)
+char * EnvExpand(char * in)
 {
 	char * output;
-	if (input[0] == '$')
+	if (in[0] == '$')
 	{
-		input++;
-		output = getenv(input);
+		in++;
+		output = getenv(in);
 	}
 	return output;
+}
+
+//WIP, have to create a list of the tokens and then search through each item in the list to decide if file is in path
+bool is_Path(char * input)
+{
+	char ** path_list;
+	char * path = getenv("PATH");
+	char * token = strtok(path,":");
+	int result;
+	
+	path_list = (char **) malloc(sizeof(char *));
+	
+	strcat(token, "/");
+	strcat(token, input);
+	
+	result = access(token, X_OK);
+	
+	if (result == 0)
+		return true;
+	else
+		return false;
+	
+	//while (token != NULL)
+	//{
+		
+	//}
+	
+	return false;
 }
