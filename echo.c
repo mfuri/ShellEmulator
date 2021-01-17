@@ -7,11 +7,17 @@ void echo(tokenlist *tokens){
         char r;
         r='$';
         if (q==r){.    //check for env var
-        //remove $ char from token and get corresponding env var
+        
+            //remove $ char from token and get corresponding env var
+
             char * arg= (char*) malloc(sizeof(tokens->items[i])-1);
-            arg=&tokens->items[i][1]; 
-           char * env=getenv(arg);
-           tokens->items[i]=env;   
+            strcpy(arg,&tokens->items[i][1]);
+         
+            char * env=getenv(arg);
+            tokens->items[i]=realloc(tokens->items[i],sizeof(env)+1);
+            strcpy(tokens->items[i],env);   
+
+            free(arg); 
          //update token list with expanded token
      
            }      
