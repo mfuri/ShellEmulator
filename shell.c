@@ -22,6 +22,7 @@ int main(int argc, char const *argv[])
 		//tokenlist *tokens = get_tokens(buffer);  
 		
 		//tilda_expand(tokens);
+		//env_expand(tokens);
 
 	
 
