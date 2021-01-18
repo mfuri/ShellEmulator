@@ -14,7 +14,7 @@ void cd(tokenlist *tokens){
         path= (char*)malloc(strlen(home)+1);
         strcpy(path,home);            
     }
-    else {                                              //otherwise get user input
+    else {                                              //otherwise get arg
         path= (char *) malloc(strlen(tokens->items[1])+1);
         strcpy(path, tokens->items[1]);
               
@@ -28,7 +28,7 @@ void cd(tokenlist *tokens){
         if (access(path,X_OK)!=0){
             printf("\n%s\n", "Directory not found");
              printf("\n%s\n", path);
-            return;
+            return;                                 //print error and exit if path not an accesible directory
         }
     }
     strcpy(pwd,path);           //change cwd
