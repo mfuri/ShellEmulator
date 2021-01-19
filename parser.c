@@ -212,8 +212,10 @@ void cd(tokenlist *tokens){.    //Does not currently account for ".."
     char * pwd;
     char * home;
  
-    tokens->items[1]=TildeExpand(tokens->items[1]);  //this line added to expand path within fn using TildeExpand on single token 
-			   				//alternatively - expand in main with tilda_expand on all tokens (i can't spell tilde apparently lol)
+    tokens->items[1]=TildeExpand(EnvExpand(tokens->items[1]));  //this line added to expand path within cd fn using Expand fns on single token 
+			   				//haven't tested this line but I think it should work?
+			   				//alternatively - expand in main with _expand on all tokens 
+			   				//(this I have tested and it works for cd and echo)
 			  
     pwd=getenv("PWD");
     home=getenv("HOME");
@@ -269,3 +271,11 @@ void ex(){
     //implement timer stuff
     printf("\n%s\n", "Shell ran for ...");
 }
+
+void echo(tokenlist *tokens){
+    
+    for (int i=1;i<tokens->size;i++){
+        printf("%s ",TildeExpand(EnvExpand(tokens->items[i])));   //added double expand function calls, same notes as in cd
+    }
+    printf("\n");
+  }
