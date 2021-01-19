@@ -183,10 +183,11 @@ bool is_Path(char * input)
 //I believe this works
 char * TildeExpand(char * input)
 {
+    if (&input[0] != "~")
+        return input;
     wordexp_t p;
     int size;
-    if(wordexp(input, &p, WRDE_UNDEF) != 0)
-        return input;
+    wordexp(input, &p, WRDE_UNDEF);
     size = strlen(p.we_wordv[0]);
     char output[size+1];
     strcpy(output, p.we_wordv[0]);
