@@ -29,15 +29,19 @@ void PrintPrompt();
 char * EnvExpand(char * input);
 bool is_Path(char *);
 char * TildeExpand(char * input);
+
 void cd(tokenlist *tokens)
+typedef void (*fnptr)();
+fnptr get_command(tokenlist *tokens);
 
-
+void commanderr();
+void ex();
 
 
 
 int main()
 {
-	while (1) {
+	do {
 		PrintPrompt();
 
 		/* input contains the whole command
@@ -58,7 +62,9 @@ int main()
 		
 		free(input);
 		free_tokens(tokens);
-	}
+	}while(strcmp(input, "exit") != 0);
+
+    	free(input);
 
 	return 0;
 }
@@ -236,4 +242,30 @@ void cd(tokenlist *tokens){.    //Does not currently account for ".."
     strcpy(pwd,path);           //change cwd
     free(path);  
     return;
+}
+
+
+
+fnptr get_command(tokenlist *tokens){ //make a list of built in command options to iterate through rather than hard code below
+    char * command=tokens->items[0];
+    if (strcmp(command,"echo")==0)
+        return echo;
+    if (strcmp(command, "exit")==0)
+        return ex;
+    if (strcmp(command,"cd")==0)
+        return cd;
+
+    else
+        return commanderr;
+}
+      
+  
+void commanderr(){
+    printf("\n%s\n", "Error: command not found");
+}
+
+void ex(){
+    //check for background process
+    //implement timer stuff
+    printf("\n%s\n", "Shell ran for ...");
 }
