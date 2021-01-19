@@ -3,11 +3,19 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <wordexp.h>
 
 typedef struct {
 	int size;
 	char **items;
 } tokenlist;
+
+typedef struct {
+    char * cmd;
+    char * arg;
+    char * src;
+    char * dest;
+} command;
 
 char *get_input(void);
 tokenlist *get_tokens(char *input);
@@ -15,9 +23,12 @@ tokenlist *get_tokens(char *input);
 tokenlist *new_tokenlist(void);
 void add_token(tokenlist *tokens, char *item);
 void free_tokens(tokenlist *tokens);
+
+
 void PrintPrompt();
 char * EnvExpand(char * input);
 bool is_Path(char *);
+char * TildeExpand(char * input);
 
 
 int main()
@@ -36,6 +47,10 @@ int main()
 		for (int i = 0; i < tokens->size; i++) {
 			printf("token %d: (%s)\n", i, tokens->items[i]);
 		}
+
+		//Testing functions
+		is_Path(tokens->items[0]);
+		printf("%s%s", TildeExpand("$PWD"), EnvExpand("$PPP"));
 		
 		free(input);
 		free_tokens(tokens);
@@ -128,7 +143,7 @@ void PrintPrompt()
 	
 		
 	if (host == -1)
-		printf("error getting hostname\n");
+		printf("Error, hostname not defined\n");
 
 	printf("%s@%s : %s > ",user,hostname,pwd);
 }
@@ -141,35 +156,40 @@ char * EnvExpand(char * in)
 		in++;
 		output = getenv(in);
 	}
+	else
+	    return in;
+	if (output == NULL)
+	    return in;
 	return output;
 }
 
 //WIP, have to create a list of the tokens and then search through each item in the list to decide if file is in path
 bool is_Path(char * input)
 {
-	char ** path_list;
+	//char ** path_list;
 	char * path = getenv("PATH");
 	char * token = strtok(path,":");
-	int result;
-	
-	path_list = (char **) malloc(sizeof(char *));
-	
-	strcat(token, "/");
-	strcat(token, input);
-	
-	result = access(token, X_OK);
-	
-	if (result == 0)
-		return true;
-	else
-	{
-		printf("Bash: command not found: %s\n", inout);
-		return false;
-	}
-	//while (token != NULL)
-	//{
-		
-	//}
-	
-	return false;
+
+    while (token != NULL)
+    {
+        printf( " %s\n", token ); //printing each token
+        token = strtok(NULL, ":");
+    }
+
+    printf("Bash: command not found: %s\n", input);
+    return false;
+}
+
+//I believe this works
+char * TildeExpand(char * input)
+{
+    wordexp_t p;
+    int size;
+    if(wordexp(input, &p, WRDE_UNDEF) != 0)
+        return input;
+    size = strlen(p.we_wordv[0]);
+    char output[size+1];
+    strcpy(output, p.we_wordv[0]);
+    wordfree(&p);
+    return output;
 }
