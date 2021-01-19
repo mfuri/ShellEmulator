@@ -17,6 +17,8 @@ fnptr get_command(tokenlist *tokens){
         return echo;
     if (strcmp(command, "exit")==0)
         return ex;
+    if (strcmp(command,"cd")==0)
+        return cd;
 
     else
         return commanderr;
