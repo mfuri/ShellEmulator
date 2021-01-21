@@ -1,3 +1,5 @@
+#include <time.h>
+
 time_t beginning, end;                                              //global variables
 int currentruntime, totalruntime, longestruntime;	
 
