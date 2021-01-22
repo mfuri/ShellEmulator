@@ -32,7 +32,7 @@ char * TildeExpand(char * input);
 
 void cd(tokenlist *tokens)
 typedef void (*fnptr)();
-fnptr get_command(tokenlist *tokens);
+void get_command(tokenlist *tokens);
 
 void commanderr();
 void ex();
@@ -55,6 +55,8 @@ int main()
 		for (int i = 0; i < tokens->size; i++) {
 			printf("token %d: (%s)\n", i, tokens->items[i]);
 		}
+		
+		getcommand(tokens); //works for echo and cd 
 
 		//Testing functions
 		is_Path(tokens->items[0]);
@@ -223,18 +225,22 @@ void cd(char * path){
 
 
 
-fnptr get_command(tokenlist *tokens){ //make a list of built in command options to iterate through rather than hard code below
-    char * command=tokens->items[0];
-    if (strcmp(command,"echo")==0)
-        return echo;
-    if (strcmp(command, "exit")==0)
-        return ex;
-    if (strcmp(command,"cd")==0)
-        return cd;
+void get_command(tokenlist *tokens){
+    if (strcmp(tokens->items[0],"cd")==0){
+        cd(EnvExpand(TildaExpand(tokens->items[1])));
+    }
 
+    else if (strcmp(tokens->items[0],"echo")==0){
+        echo(tokens);
+    }
+
+   
     else
-        return commanderr;
+        commanderr();
+    return;
 }
+      
+
       
   
 void commanderr(){
