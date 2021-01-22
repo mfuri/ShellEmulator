@@ -18,7 +18,7 @@ bool exitshell(tokenlist *tokens);
 	time_shell();                                                           //calculates runtime and adds to total and compares to longest running command
 	if(exitshell(tokens)==true) 
 	{
-		wait(NULL);
+		waitpid(-1,NULL,0);
     	break;
 	};
 
