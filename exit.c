@@ -14,12 +14,12 @@ bool exitshell(tokenlist *tokens);
     //prompt and getting input and tokens//
 
 
-    time(&end);																//ends timing the shell
+    	time(&end);																//ends timing the shell
 	time_shell();                                                           //calculates runtime and adds to total and compares to longest running command
 	if(exitshell(tokens)==true) 
 	{
 		waitpid(-1,NULL,0);
-    	break;
+    		break;
 	};
 
     //freeing input and tokens
@@ -44,10 +44,10 @@ bool exitshell(tokenlist *tokens)
 void time_shell()
 {
 	currentruntime = difftime(end,beginning);								//store command execution run time.
-		totalruntime  += currentruntime;										//time storing
-		if(longestruntime<currentruntime)
-		{
-			longestruntime = currentruntime;
-		}
+	totalruntime  += currentruntime;										//time storing
+	if(longestruntime<currentruntime)
+	{
+		longestruntime = currentruntime;
+	}
 
 }
