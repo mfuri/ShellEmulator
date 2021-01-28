@@ -198,20 +198,42 @@ char * EnvExpand(char * in)
 	return output;
 }
 
-//WIP, have to create a list of the tokens and then search through each item in the list to decide if file is in path
 bool is_Path(char * input)
 {
-	//char ** path_list;
-	char * path = getenv("PATH");
-	char * token = strtok(path,":");
+    
+    char * path = getenv("PATH");
+
+    char * pathcopy = (char *)malloc(strlen(path)+1);		//this copy might not be necessary
+    strcpy(pathcopy,path);
+
+    char * token = strtok(pathcopy,":");
+
+    char * fpath= (char *) malloc(strlen(token)+strlen(input)+2);
 
     while (token != NULL)
-    {
-        printf( " %s\n", token ); //printing each token
-        token = strtok(NULL, ":");
+    {   
+        fpath=(char*) realloc(fpath,strlen(token)+strlen(input)+2);	
+        strcpy(fpath,token);
+        strcat(fpath,"/");
+        strcat(fpath,input);		//fpath = current path being checked + /cmd
+        
+        if( access(fpath, X_OK)!=0){	//if cmd file not in current path, move to next path
+            printf( " %s\n", token ); //printing each token
+            token = strtok(NULL, ":"); 
+            continue;
+        }
+        printf("cmd path found\n");	//if loop gets here cmd was found
+        printf("%s",fpath);		//location of cmd
+        //execute command
+        free(fpath);
+        free(pathcopy);
+        return true;
+
     }
 
-    printf("Bash: command not found: %s\n", input);
+    printf("Bash: command not found: %s\n", input); //if exits loop, command not found
+    free(fpath);
+    free(pathcopy);
     return false;
 }
 
