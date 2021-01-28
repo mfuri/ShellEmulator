@@ -52,8 +52,10 @@ int main(int argc, char const *argv[])
 
         tokenlist *tokens = get_tokens(buffer);
 
-        tilda_expand(tokens);		
-        env_expand(tokens);
+        tilda_expand(tokens);		//note: I'm using these fns that expand all tokens currently bc I was getting compiler errors 
+        env_expand(tokens);		// when I tried to switch to using michaels fns. I think his implementation is cleaner tho, not sure 
+     					//why it wasn't working for me. my versions of the expansion fns are in a diff file just to not clutter things
+     					//but atm this file won't run without those functions added. 
 
         time(&end); 
         totalruntime+=difftime(end,beginning);
