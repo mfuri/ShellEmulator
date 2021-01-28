@@ -31,44 +31,65 @@ bool is_Path(char *);
 char * TildeExpand(char * input);
 
 void cd(tokenlist *tokens)
-typedef void (*fnptr)();
-void get_command(tokenlist *tokens);
 
-void commanderr();
-void ex();
+bool get_command(tokenlist *tokens);
 
 
 
-int main()
+
+int main(int argc, char const *argv[])
 {
-	do {
-		PrintPrompt();
+    size_t size = 10;
+    char * buffer;
+    
+   
+    while (1)
+    //do
+    {   time(&beginning);
+        
+        PrintPrompt();
+        buffer=get_input();
 
-		/* input contains the whole command
-		 * tokens contains substrings from input split by spaces
-		 */
+        tokenlist *tokens = get_tokens(buffer);
 
-		char *input = get_input();
-		printf("whole input: %s\n", input);
+        tilda_expand(tokens);		
+        env_expand(tokens);
 
-		tokenlist *tokens = get_tokens(input);
-		for (int i = 0; i < tokens->size; i++) {
-			printf("token %d: (%s)\n", i, tokens->items[i]);
-		}
-		
-		getcommand(tokens); //works for echo and cd 
+        time(&end); 
+        totalruntime+=difftime(end,beginning);
+ 
+        time(&beginning);
 
-		//Testing functions
-		is_Path(tokens->items[0]);
-		printf("%s%s", TildeExpand("$PWD"), EnvExpand("$PPP"));
-		
-		free(input);
-		free_tokens(tokens);
-	}while(strcmp(input, "exit") != 0);
+        bool builtin=get_command(tokens);		//if not built in command, search for external path
+        if (builtin==false){
+            bool p=is_Path(tokens->items[0]);
+        }
+     
+        //
+        
 
-    	free(input);
+        time(&end); 
+                                                                    //ends timing the shell
+        time_shell();      
+                                                             //calculates runtime and adds to total and compares to longest running command
+        if(exitshell(tokens)==true) 
+        {
+            waitpid(-1,NULL,0);
+            break;
+        }
 
-	return 0;
+       /*for (int i = 0; i < tokens->size; i++) {
+       printf("token %d: (%s)\n", i, tokens->items[i]);
+        }*/
+       
+        
+        free_tokens(tokens);
+    }
+    //while (strcmp(buffer, "exit") != 0);
+
+    free(buffer);
+    
+    return 0;
 }
 
 tokenlist *new_tokenlist(void)
@@ -220,43 +241,43 @@ void cd(char * path){
    }
    printf("Error");
    return;
-    
-    }
+}
 
 
 
-void get_command(tokenlist *tokens){
+bool get_command(tokenlist *tokens){
     if (strcmp(tokens->items[0],"cd")==0){
-        cd(EnvExpand(TildaExpand(tokens->items[1])));
+        cd(tokens->items[1]);
+        return true;
     }
 
-    else if (strcmp(tokens->items[0],"echo")==0){
+    if (strcmp(tokens->items[0],"echo")==0){
         echo(tokens);
+        return true;
     }
 
    
-    else
-        commanderr();
-    return;
+    if (strcmp(tokens->items[0],"exit")==0){
+ 
+        return true;
+        
+    }
+    printf("not a built in command");
+    return false;
 }
       
 
       
-  
-void commanderr(){
-    printf("\n%s\n", "Error: command not found");
-}
 
-void ex(){
-    //check for background process
-    //implement timer stuff
-    printf("\n%s\n", "Shell ran for ...");
-}
+      
+
+
+
 
 void echo(tokenlist *tokens){
     
     for (int i=1;i<tokens->size;i++){
-        printf("%s ",TildeExpand(EnvExpand(tokens->items[i])));   //added double expand function calls, same notes as in cd
+        printf("%s ",tokens->items[i]);   
     }
     printf("\n");
   }
