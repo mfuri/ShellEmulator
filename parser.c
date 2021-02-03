@@ -27,8 +27,11 @@ void free_tokens(tokenlist *tokens);
 
 void PrintPrompt();
 char * EnvExpand(char * input);
-bool is_Path(char *);
 char * TildeExpand(char * input);
+
+bool is_Path(tokenlist *tokens);
+void external_cmd(char * path, tokenlist * tokens);
+
 
 void cd(tokenlist *tokens)
 
@@ -198,12 +201,12 @@ char * EnvExpand(char * in)
 	return output;
 }
 
-bool is_Path(char * input)
+bool is_Path(tokenlist * tokens)
 {
-    
+    char * input=tokens->items[0];
     char * path = getenv("PATH");
 
-    char * pathcopy = (char *)malloc(strlen(path)+1);		//this copy might not be necessary
+    char * pathcopy = (char *)malloc(strlen(path)+1);
     strcpy(pathcopy,path);
 
     char * token = strtok(pathcopy,":");
@@ -212,31 +215,57 @@ bool is_Path(char * input)
 
     while (token != NULL)
     {   
-        fpath=(char*) realloc(fpath,strlen(token)+strlen(input)+2);	
+        fpath=(char*) realloc(fpath,strlen(token)+strlen(input)+2);
         strcpy(fpath,token);
         strcat(fpath,"/");
-        strcat(fpath,input);		//fpath = current path being checked + /cmd
-        
-        if( access(fpath, X_OK)!=0){	//if cmd file not in current path, move to next path
-            printf( " %s\n", token ); //printing each token
-            token = strtok(NULL, ":"); 
+        strcat(fpath,input);
+        //printf("loop");
+
+        if( access(fpath, X_OK)!=0){
+            //printf( " %s\n", token ); //printing each token
+            token = strtok(NULL, ":");
+            
             continue;
         }
-        printf("cmd path found\n");	//if loop gets here cmd was found
-        printf("%s",fpath);		//location of cmd
-        //execute command
+
+        external_cmd(fpath,tokens); //call fn to execute cmd
+
         free(fpath);
         free(pathcopy);
         return true;
 
     }
 
-    printf("Bash: command not found: %s\n", input); //if exits loop, command not found
+    printf("Bash: command not found: %s\n", input);
     free(fpath);
     free(pathcopy);
     return false;
 }
 
+void external_cmd(char * path, tokenlist * tokens){ 
+
+    char *x[tokens->size+1];
+    x[0]=path;
+
+    for (int i=1;i<tokens->size;i++){
+        x[i]=tokens->items[i];    
+    }
+
+    x[tokens->size]=NULL;
+ 
+    int pid=fork();	
+
+    if (pid==0){
+        //in child
+        int e=execv(x[0],x);
+
+    } else {
+            //printf("i am a parent\n");
+            waitpid(pid,NULL,0);
+           
+
+    }
+}
 //I believe this works
 char * TildeExpand(char * input)
 {
