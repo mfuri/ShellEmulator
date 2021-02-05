@@ -37,6 +37,13 @@ bool redirection(tokenlist *tokens)
     if(oflag = true)
     {
       file = open(output, O_WRONLY | O_CREAT| O_TRUNC, 0777);       //create or overwrite fill of "output" name
+      
+      if(file == -1)
+      {
+          printf("issue creating/opening file\n");
+          return false;
+      }
+      
       close(STDOUT_FILENO);
       dup2(file, STDOUT_FILENO);
       close(file);
@@ -45,7 +52,14 @@ bool redirection(tokenlist *tokens)
     
     if(iflag = true)
     {
-      file = open(input, O_RDONLY);        //if file exists, it'll open successfully. Read only
+      file2 = open(input, O_RDONLY);        //if file exists, it'll open successfully. Read only
+      
+      if(file2 == -1)
+      {
+          printf("issue creating/opening file\n");
+          return false;
+      }
+      
       close(STDIN_FILENO);
       dup2(file2, STDIN_FILENO);
       close(file2);
