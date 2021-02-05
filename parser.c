@@ -171,21 +171,6 @@ void free_tokens(tokenlist *tokens)
 	free(tokens);
 }
 
-void PrintPrompt()
-{
-	int host;
-	char hostname[256];
-	char * user = getenv("USER");
-	char * pwd = getenv("PWD");
-	host = gethostname(hostname, sizeof(hostname));
-	
-		
-	if (host == -1)
-		printf("Error, hostname not defined\n");
-
-	printf("%s@%s : %s > ",user,hostname,pwd);
-}
-
 char * EnvExpand(char * in)
 {
 	char * output;

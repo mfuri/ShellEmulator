@@ -7,6 +7,8 @@
 #include <time.h>
 
 /****C Files****/
+//Turns out we dont need
+/*
 #include "cd.c"
 #include "exit.c"
 #include "get_command.c"
@@ -14,8 +16,7 @@
 #include "redirection.c"
 #include "tilda_expand.c"
 #include "env_expand+echo.c"
-
-
+#include "printprompt.c"*/
 
 
 typedef struct {
@@ -49,6 +50,6 @@ void tilda_expand(tokenlist *tokens);
 
 
 /****Tested and work****/ /****Printing/Character Expansion Functions****/
-void PrintPrompt(void);
+void print_Prompt(void);
 char * EnvExpand(char * input);
 char * TildeExpand(char * input);
