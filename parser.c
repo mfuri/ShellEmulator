@@ -1,9 +1,12 @@
-#include <stdio.h>
+//Shouldn't need these
+/*#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
-#include <wordexp.h>
+#include <wordexp.h>*/
+
+#include "shell.h"
 
 typedef struct {
 	int size;

@@ -1,3 +1,6 @@
+#ifndef SHELL_H
+#define SHELL_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -53,3 +56,5 @@ void tilda_expand(tokenlist *tokens);
 void print_Prompt(void);
 char * EnvExpand(char * input);
 char * TildeExpand(char * input);
+
+#endif
