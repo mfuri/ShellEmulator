@@ -47,14 +47,13 @@ void echo(tokenlist *tokens);
 void env_expand(tokenlist *tokens);
 bool is_Path(char * input);
 bool redirection(tokenlist *tokens);
-void tilda_expand(tokenlist *tokens);
 
 
 
 
 /****Tested and work****/ /****Printing/Character Expansion Functions****/
 void print_Prompt(void);
+void tilda_expand(tokenlist *tokens);
 char * EnvExpand(char * input);
-char * TildeExpand(char * input);
 
 #endif
