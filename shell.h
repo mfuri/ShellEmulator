@@ -53,7 +53,7 @@ bool redirection(tokenlist *tokens);
 
 /****Tested and work****/ /****Printing/Character Expansion Functions****/
 void print_Prompt(void);
-void tilda_expand(tokenlist *tokens);
+void tilda_Expand(tokenlist *tokens);
 char * EnvExpand(char * input);
 
 #endif
