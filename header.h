@@ -6,6 +6,18 @@
 #include <wordexp.h>
 #include <time.h>
 
+/****C Files****/
+#include "cd.c"
+#include "exit.c"
+#include "get_command.c"
+#include "is_path.c"
+#include "redirection.c"
+#include "tilda_expand.c"
+#include "env_expand+echo.c"
+
+
+
+
 typedef struct {
 	int size;
 	char **items;
