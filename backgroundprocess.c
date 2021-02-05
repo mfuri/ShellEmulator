@@ -1,10 +1,9 @@
-/* I included all the relevant functions for what I've tried to write for bg process. have not tested yet. 
+/* I included all the relevant functions for what I've tried to write for bg process. 
+have not tested yet. */
 
 
-bool is_Path(tokenlist *tokens, bool bg);           //updated to take bg flag to avoid double fork
-
+bool is_Path(tokenlist *tokens, bool bg);         //updated to take bg flag to avoid double fork
 void external_cmd(char * path, tokenlist * tokens, bool bg); 
-//this could prob be a multipurpose flag w i/o and prob pipes as well
 
 
 //background processing
@@ -26,9 +25,7 @@ int main(int argc, char const *argv[])
     size_t size = 10;
     char * buffer;
     
-   
     while (1)
-    //do
     {   time(&beginning);
         
         check_background();
@@ -41,8 +38,9 @@ int main(int argc, char const *argv[])
         tilda_expand(tokens);
         env_expand(tokens);
 
-        bool is_bg=false;
-
+        bool is_bg=false;       //flag to indicate background process
+                                //can update to include flags for io/pipes
+     
         if(run_background(tokens)){
             is_bg=exec_background(tokens);
 
@@ -50,10 +48,8 @@ int main(int argc, char const *argv[])
                 continue;
             //if not the bg process, return to beginning of loop
             }
-       
         }
         //if bg process, now executes cmd
-
         //deal with pipe and io tokens
 
         time(&end); 
@@ -63,40 +59,24 @@ int main(int argc, char const *argv[])
 
         bool builtin=get_command(tokens);
         if (builtin==false){
-            //background(tokens);
             bool p=is_Path(tokens,is_bg);
-
         }
-
-        time(&end); 
-                                                                    //ends timing the shell
-        time_shell();      
-                                                             //calculates runtime and adds to total and compares to longest running command
+        time(&end);           //ends timing the shell
+        time_shell();         //calculates runtime and adds to total & compares to longest running cmd
         if(exitshell(tokens)==true) 
-        {
+        { 
             waitpid(-1,NULL,0);
             break;
         }
-
-       /*for (int i = 0; i < tokens->size; i++) {
-       printf("token %d: (%s)\n", i, tokens->items[i]);
-        }*/
-       
-        
         free_tokens(tokens);
     }
-    //while (strcmp(buffer, "exit") != 0);
-
     free(buffer);
-    
     return 0;
 }
 
 
-
 bool is_Path(tokenlist * tokens,bool bg)
 {
-    //char ** path_list;
     char * input=tokens->items[0];
     char * path = getenv("PATH");
 
@@ -113,12 +93,10 @@ bool is_Path(tokenlist * tokens,bool bg)
         strcpy(fpath,token);
         strcat(fpath,"/");
         strcat(fpath,input);
-        //printf("loop");
+
 
         if( access(fpath, X_OK)!=0){
-            //printf( " %s\n", token ); //printing each token
             token = strtok(NULL, ":");
-            
             continue;
         }
 
@@ -137,21 +115,20 @@ bool is_Path(tokenlist * tokens,bool bg)
 }
 
 void external_cmd(char * path, tokenlist * tokens,bool bg){   //updated to take bg flag
-
-    char *x[tokens->size+1];
+    
+    
+    char *x[tokens->size+1];  //load path and args to be executed
     x[0]=path;
 
     for (int i=1;i<tokens->size;i++){
         x[i]=tokens->items[i];    
     }
-
     x[tokens->size]=NULL;
     
     if (bg){                  //if background process, don't fork again 
         execv(x[0],x);
     }
 
-    
     int pid=fork();
 
     if (pid==0){
@@ -167,15 +144,12 @@ void external_cmd(char * path, tokenlist * tokens,bool bg){   //updated to take 
 
 void check_background(){
 //for process in list of bg processes
-for (int i = 0; i<num_bg_jobs ;i++){
-    if status_list[i]!=0{
+  for (int i = 0; i<num_bg_jobs ;i++){
+      if status_list[i]!=0{
         printf("[%i]   Done\n            %s",i+1,bg_args[i]);
         //proccess finished
-
     }
- 
-}
- 
+  }
 }
 
 bool run_background(tokenlist * tokens){
@@ -185,7 +159,6 @@ bool run_background(tokenlist * tokens){
         return true;
     }
     return false;
-
 }
 
 bool exec_background(tokenlist * tokens){
@@ -202,23 +175,19 @@ bool exec_background(tokenlist * tokens){
         for (int i=0;i<tokens->size-1;i++){
             args_len+=strlen(tokens->items[i])+1;    
         }
-        
         bg_args[num_bg_jobs]=(char*)malloc(args_len);
         
         //copy background command tokens 
         strcpy(bg_args[num_bg_jobs],tokens->items[i]); 
         for (int i=1;i<tokens->size-1;i++){
             strcat(bg_args[num_bg_jobs]," ");
-            strcat(bg_args[num_bg_jobs],tokens->items[i]); 
-               
+            strcat(bg_args[num_bg_jobs],tokens->items[i]);         
         }
-        
-        
+         
         num_bg_jobs++;
         printf("[%i] %i",num_bg_jobs, job);
 
         return true;
-
         //will go back to main loop to execute
     }
     else{
@@ -226,8 +195,6 @@ bool exec_background(tokenlist * tokens){
         pid_t status=waitpid(pid,NULL,WNOHANG)
         status_list[num_bg_jobs-1]=status;    //save status, may need to recheck this later? not sure
         return false;
-        
-
         }
 
 }
