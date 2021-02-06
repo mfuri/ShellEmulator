@@ -3,9 +3,6 @@
 bool is_Path(tokenlist *tokens);
 void external_cmd(char * path, tokenlist * tokens);
 
-
-void cd(tokenlist *tokens);
-
 bool get_command(tokenlist *tokens);
 
 
@@ -16,14 +13,15 @@ int main(int argc, char const *argv[])
     size_t size = 10;
     char * buffer;
     
+	BEGIN = time(NULL);
    
     while (1)
     //do
-    {   time(&beginning);
-        
+    {
         PrintPrompt();
         buffer=get_input();
-
+		
+		COMMAND_BEGIN = time(NULL);
         tokenlist *tokens = get_tokens(buffer);
 
         tilde_Expand(tokens);
@@ -39,11 +37,9 @@ int main(int argc, char const *argv[])
             bool p=is_Path(tokens->items[0]);
         }
      
-        //
+		COMMAND_END = time(NULL);
         
-
-        time(&end); 
-                                                                    //ends timing the shell
+																//ends timing the shell
         time_shell();      
                                                              //calculates runtime and adds to total and compares to longest running command
         if(exitshell(tokens)==true) 
@@ -107,7 +103,8 @@ bool is_Path(tokenlist * tokens)
     return false;
 }
 
-void external_cmd(char * path, tokenlist * tokens){ 
+void external_cmd(char * path, tokenlist * tokens)
+{
 
     char *x[tokens->size+1];
     x[0]=path;
@@ -150,7 +147,8 @@ void cd(char * path){
 
 
 bool get_command(tokenlist *tokens){
-    if (strcmp(tokens->items[0],"cd")==0){
+    if (strcmp(tokens->items[0],"cd") == 0)
+	{
         cd(tokens->items[1]);
         return true;
     }

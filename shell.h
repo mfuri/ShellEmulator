@@ -9,6 +9,10 @@
 #include <wordexp.h>
 #include <time.h>
 
+/**GLOBAL TIME VARIABLES**/
+time_t BEGIN, END, COMMAND_BEGIN, COMMAND_END;
+int CURRENT_RUN_TIME, TOTAL_RUN_TIME, LONGEST_RUN_TIME;
+
 /**Provided functions and struct**/
 typedef struct {
 	int size;
@@ -25,13 +29,10 @@ void free_tokens(tokenlist *tokens);
 
 bool is_Path(tokenlist *tokens);
 void external_cmd(char * path, tokenlist * tokens);
-void cd(tokenlist *tokens);
 bool get_command(tokenlist *tokens);
 
 
 /****From External Files****/
-void cd(char * path);
-
 bool is_Path(char * input);
 bool redirection(tokenlist *tokens);
 
@@ -39,6 +40,10 @@ bool redirection(tokenlist *tokens);
 void print_Prompt(void);
 void tilda_Expand(tokenlist *);
 void env_Expand(tokenlist *);
-void Echo(tokenlist *);
+
+/**Built-Ins**/
+void cd(tokenlist *);
+void echo(tokenlist *);
+
 
 #endif
