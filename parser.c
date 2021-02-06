@@ -13,15 +13,18 @@ int main(int argc, char const *argv[])
     size_t size = 10;
     char * buffer;
     
+	/*TIME BEGIN FOR WHOLE SHELL**/
 	BEGIN = time(NULL);
    
     while (1)
     //do
     {
         PrintPrompt();
-        buffer=get_input();
+        buffer = get_input();
 		
+		/**TIME BEGIN FOR EACH COMMAND**/
 		COMMAND_BEGIN = time(NULL);
+		
         tokenlist *tokens = get_tokens(buffer);
 
         tilde_Expand(tokens);
@@ -37,6 +40,7 @@ int main(int argc, char const *argv[])
             bool p=is_Path(tokens->items[0]);
         }
      
+		/**TIME END FOR EACH COMMAND**/
 		COMMAND_END = time(NULL);
         
 																//ends timing the shell
