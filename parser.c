@@ -1,16 +1,14 @@
 #include "shell.h"
 
-bool is_Path(tokenlist *tokens);
-void external_cmd(char * path, tokenlist * tokens);
-
-bool get_command(tokenlist *tokens);
-
 /**GLOBAL TIME VARIABLES**/
 time_t BEGIN, END, COMMAND_BEGIN, COMMAND_END;
 double CURRENT_RUN_TIME, TOTAL_RUN_TIME, LONGEST_RUN_TIME;
 
 /**GLOBAL PROCESS VARIABLES**/
-int num_bg_jobs;
+int NUM_JOBS = 10;
+pid_t BG_LIST[10];
+char * BG_ARGS[10];
+
 
 int main(int argc, char const * argv[])
 {
@@ -23,11 +21,11 @@ int main(int argc, char const * argv[])
     while (1)
     //do
     {
-        PrintPrompt();
+        print_Prompt();
         buffer = get_input();
 	//prevents seg fault if user hits enter or space enter
         while(buffer[0]==0||buffer[0]==32){
-            PrintPrompt();
+			print_Prompt();
 
             buffer=get_input();
 
@@ -77,7 +75,7 @@ bool exitshell(tokenlist *tokens)
     char *c = "exit";
     if(strcmp(c,tokens->items[0])==0)
 	{
-		printf("Shell ran for %d seconds and took %d seconds to execute one command.", TOTAL_RUN_TIME, LONGEST_RUN_TIME);
+		printf("Shell ran for %f seconds and took %f seconds to execute one command.", TOTAL_RUN_TIME, LONGEST_RUN_TIME);
 		return true;
 	}
 	else
@@ -93,7 +91,7 @@ void command_Time()
     if (LONGEST_RUN_TIME < temp)
         LONGEST_RUN_TIME = temp;
 }
-
+/*
 bool is_Path(tokenlist * tokens)
 {
     char * input=tokens->items[0];
@@ -161,23 +159,10 @@ void external_cmd(char * path, tokenlist * tokens)
     }
 }
 
-
-void cd(char * path){
-    if (path==NULL){
-        path=getenv("HOME");
-    }
-    if (chdir(path)==0){
-        char *cwd = getcwd(NULL,0);
-        setenv("PWD",cwd,1);
-        free(cwd);
-        return;
-   }
-   printf("Error");
-   return;
-}
+*/
 
 
-
+/*
 bool get_command(tokenlist *tokens){
     if (strcmp(tokens->items[0],"cd") == 0)
 	{
@@ -198,41 +183,41 @@ bool get_command(tokenlist *tokens){
     }
     printf("not a built in command");
     return false;
-}
+}*/
 
 void check_background()
 {
 //for process in list of bg processes
-	pid_t new_bg_list[10];
-	char* new_bg_args[10];
-	int new_num = num_bg_jobs;
+	pid_t new_BG_LIST[10];
+	char* new_BG_ARGS[10];
+	int new_num = NUM_JOBS;
 
 	int j=0;
-	for (int i = 0; i < num_bg_jobs; i++){
-		pid_t status=waitpid(bg_list[i],NULL,WNOHANG);
+	for (int i = 0; i < NUM_JOBS; i++){
+		pid_t status=waitpid(BG_LIST[i],NULL,WNOHANG);
 		if (status!=0){
-			printf("[%i]   Done            %s\n",i+1,bg_args[i]);
+			printf("[%i]   Done            %s\n",i+1,BG_ARGS[i]);
 			//proccess finished
 			new_num--;
 
 		}
  
 		else{
-			new_bg_list[j]=bg_list[i];
-			new_bg_args[j]=(char*) malloc(sizeof(bg_args[i]));
-			new_bg_args[j]=bg_args[i];
+			new_BG_LIST[j]=BG_LIST[i];
+			new_BG_ARGS[j]=(char*) malloc(sizeof(BG_ARGS[i]));
+			new_BG_ARGS[j]=BG_ARGS[i];
 			j++;
 		  
 			}
 	}
 	   
-	if (num_bg_jobs!=new_num){
-		num_bg_jobs=new_num;
+	if (NUM_JOBS!=new_num){
+		NUM_JOBS=new_num;
 
-		for (int i=0;i<num_bg_jobs;i++){
-			bg_list[i]=new_bg_list[i];
+		for (int i=0;i<NUM_JOBS;i++){
+			BG_LIST[i]=new_BG_LIST[i];
 			
-			bg_args[i]=new_bg_args[i];
+			BG_ARGS[i]=new_BG_ARGS[i];
 		}
 	}
 	
@@ -254,13 +239,13 @@ bool run_background(tokenlist * tokens){
 bool exec_background(tokenlist * tokens)
 {
   
-	num_bg_jobs++;
-	bg_args[num_bg_jobs-1]=(char*)malloc(sizeof(tokens->items));
-	strcpy(bg_args[num_bg_jobs-1],tokens->items[0]);
+	NUM_JOBS++;
+	BG_ARGS[NUM_JOBS-1]=(char*)malloc(sizeof(tokens->items));
+	strcpy(BG_ARGS[NUM_JOBS-1],tokens->items[0]);
 	for (int i=1;i<tokens->size;i++)
 	{
-		strcat(bg_args[num_bg_jobs-1]," ");
-		strcat(bg_args[num_bg_jobs-1], tokens->items[i]);
+		strcat(BG_ARGS[NUM_JOBS-1]," ");
+		strcat(BG_ARGS[NUM_JOBS-1], tokens->items[i]);
 	}
 
 	pid_t pid=fork();
@@ -273,13 +258,11 @@ bool exec_background(tokenlist * tokens)
 	}
 	else{
 
-		bg_list[num_bg_jobs-1]=pid;
+		BG_LIST[NUM_JOBS-1]=pid;
 		
-		printf("[%i] %i\n",num_bg_jobs,bg_list[num_bg_jobs-1]);
+		printf("[%i] %i\n",NUM_JOBS,BG_LIST[NUM_JOBS-1]);
 	   
 		return false;
-		
-
 	}
 
 }

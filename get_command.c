@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-
-
+/*#include "shell.h"
 
 typedef void (*fnptr)();
 fnptr get_command(tokenlist *tokens);
@@ -33,4 +28,4 @@ void ex(){
     //check for background process
     //implement timer stuff
     printf("\n%s\n", "Shell ran for ...");
-}
+}*/

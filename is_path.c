@@ -37,4 +37,5 @@ while (token != NULL)
 printf("Bash: command not found: %s\n", input);
 free(fpath);
 free(pathcopy);
-return false;]
+return false;
+}

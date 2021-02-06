@@ -25,9 +25,10 @@ void free_tokens(tokenlist *tokens);
 
 
 
+
 //bool is_Path(tokenlist *tokens);
 void external_cmd(char * path, tokenlist * tokens);
-bool get_command(tokenlist *tokens);
+bool get_command(tokenlist * tokens);
 
 
 /****From External Files****/
@@ -35,13 +36,14 @@ bool get_command(tokenlist *tokens);
 bool redirection(tokenlist *tokens);
 bool exitshell(tokenlist *tokens);
 void command_Time(void);
+bool redirection(tokenlist * tokens);
 
 
 
 
 /****Tested and work****/ /****Printing/Character Expansion Functions****/
 void print_Prompt(void);
-void tilda_Expand(tokenlist *);
+void tilde_Expand(tokenlist *);
 void env_Expand(tokenlist *);
 
 /**Built-Ins**/
