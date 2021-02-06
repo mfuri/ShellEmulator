@@ -25,7 +25,13 @@ int main(int argc, char const * argv[])
     {
         PrintPrompt();
         buffer = get_input();
-		
+	//prevents seg fault if user hits enter or space enter
+        while(buffer[0]==0||buffer[0]==32){
+            PrintPrompt();
+
+            buffer=get_input();
+
+        }
 		/**TIME BEGIN FOR EACH COMMAND**/
 		COMMAND_BEGIN = time(NULL);
 		
