@@ -1,41 +1,40 @@
+#include "shell.h"
+
 bool is_Path(tokenlist * tokens)
 {
-	int i;
-//for (i = 0; i < strlen(tokens->items[0]); i ++)
+	
+	char * path = getenv("PATH");
 
-char * path = getenv("PATH");
+	char * pathcopy = (char *)malloc(strlen(path)+1);
+	strcpy(pathcopy,path);
 
-char * pathcopy = (char *)malloc(strlen(path)+1);
-strcpy(pathcopy,path);
+	char * token = strtok(pathcopy,":");
 
-char * token = strtok(pathcopy,":");
+	char * fpath = (char *) malloc(strlen(token)+strlen(tokens->items[0])+2);
 
-char * fpath= (char *) malloc(strlen(token)+strlen(input)+2);
-
-while (token != NULL)
+	while (token != NULL)
 	{
-		fpath=(char*) realloc(fpath,strlen(token)+strlen(input)+2);
+			fpath = (char*) realloc(fpath,strlen(token)+strlen(tokens->items[0])+2);
+			strcpy(fpath,token);
+			strcat(fpath,"/");
+			strcat(fpath,tokens->items[0]);
 		
-		strcpy(fpath,token);
-		strcat(fpath,"/");
-		strcat(fpath,input);
-		
-		if( access(fpath, X_OK)!=0){
-			//printf( " %s\n", token ); //printing each token
+		if (access(fpath, X_OK)!= 0)
+		{
 			token = strtok(NULL, ":");
 			continue;
 		}
-		printf("cmd path found\n");
-		printf("%s",fpath);
-		//execute command
+		tokens->items[0] = (char*) realloc(tokens->items[0], strlen(fpath)+1);
+		strcpy(tokens->items[0], fpath);
+		
 		free(fpath);
 		free(pathcopy);
 		return true;
 		
 	}
 
-printf("Bash: command not found: %s\n", input);
-free(fpath);
-free(pathcopy);
-return false;
+	printf("Bash: command not found: %s\n", tokens->items[0]);
+	free(fpath);
+	free(pathcopy);
+	return false;
 }

@@ -7,7 +7,7 @@ void redirection(tokenlist *tokens)
   //Add items to new tokenlist before < or >
   bool iflag1, iflag2, oflag1, oflag2 = false;
   char * file1, file2;
-
+  FILE * fpointer1, fpointer2;
 
   int i;
 
@@ -40,9 +40,6 @@ void redirection(tokenlist *tokens)
   }
   bool oflag = false; 
   bool iflag = false;
-
-  int file;
-  int file2;
   
   pid_t r_pid = fork();
 
@@ -50,6 +47,39 @@ void redirection(tokenlist *tokens)
   {
     if()
     {
+        if(iflag2)
+        {
+          fpointer = fopen(file2, O_WRONLY | O_CREAT| O_TRUNC);
+          fpointer2 = fopen()
+          //fopen1
+          //fopen2
+          //if (filepointer1 == NULL || filepointer2 == NULL)
+          // error message
+           // break:
+           //spawning of the processes or whathaveyous
+        }
+        else if(oflag2)
+        {
+          if(open(file2, O_WRONLY | O_CREAT| O_TRUNC) != -1   );       //anything left of > is an output, so create or overwrite fil
+          {
+            dup2(file2, STDOUT_FILENO);
+          }
+         
+          printf("Error opening or creating file\n");
+          break;
+          //else
+          //  error and break;
+          
+        }
+
+        if(iflag1)
+        {
+          
+        }
+        else if(oflag1)
+        {
+          f_output = open(file2, O_WRONLY | O_CREAT| O_TRUNC, 0777);       //anything left of < is an output, so create or overwrite fil
+        }
 
     }
 
