@@ -1,5 +1,5 @@
 /* I included all the relevant functions for what I've tried to write for bg process. 
-have not tested yet. */
+seems to work somewhat but def has bugs */
 
 
 bool is_Path(tokenlist *tokens, bool bg);         //updated to take bg flag to avoid double fork
@@ -141,60 +141,106 @@ void external_cmd(char * path, tokenlist * tokens,bool bg){   //updated to take 
     }
 }
 
-
 void check_background(){
 //for process in list of bg processes
-  for (int i = 0; i<num_bg_jobs ;i++){
-      if status_list[i]!=0{
-        printf("[%i]   Done\n            %s",i+1,bg_args[i]);
-        //proccess finished
+    pid_t new_bg_list[10];
+    pid_t new_status_list[10];
+    char* new_bg_args[10];
+    bool completed_prev=false;
+    bool update=false;
+
+    
+
+    for (int i = 0; i<num_bg_jobs ;i++){
+        pid_t status=waitpid(bg_list[i],NULL,WNOHANG);
+
+        if (status!=0){
+           
+            printf("[%i]   Done            %s\n",i+1,bg_args[i]);
+            //proccess finished
+            num_bg_jobs--;
+            completed_prev=true;
+            update=true;
+
+        }
+        else{
+            int j=i;
+            if (completed_prev){
+                j--;
+                completed_prev=false;
+            }
+            
+            new_bg_list[j]=bg_list[i];
+            new_bg_args[j]=(char*) malloc(sizeof(bg_args[i]));
+            new_bg_args[j]=bg_args[i];
+            new_status_list[j]=new_status_list[i];
+
+        }
+   
     }
-  }
+    if (update){
+        for (int i=0;i<num_bg_jobs;i++){
+            bg_list[i]=new_bg_list[i];
+            status_list[i]=new_status_list[i];
+            bg_args[i]=new_bg_args[i];
+            free(new_bg_args[i]);
+        }
+    }
+    
+    return;
+     
 }
 
 bool run_background(tokenlist * tokens){
 //returns true if user requested background processing 
-    if (tokens->items[tokens->size-1]=='&'){
-        tokens->items[tokens->size-1]==NULL;    //remove & token
+    if (tokens->items[tokens->size-1][0]=='&'){
+        tokens->items[tokens->size-1]=NULL;    //remove & token
+
         return true;
     }
     return false;
+
 }
 
 bool exec_background(tokenlist * tokens){
+  
+    num_bg_jobs++;
+    bg_args[num_bg_jobs-1]=(char*)malloc(sizeof(tokens->items));
+    strcpy(bg_args[num_bg_jobs-1],tokens->items[0]); 
+    for (int i=1;i<tokens->size-1;i++){
+        strcat(bg_args[num_bg_jobs-1]," ");
+        strcat(bg_args[num_bg_jobs-1],tokens->items[i]);           
+    }
+
+  
     pid_t pid=fork();
 
+
+
+    
     if (pid==0){
         //execute in child
 
-        pid_t job=getpid();
-        bg_list[num_bg_jobs]=job;
-
-        //get size of string to store bg command tokens
-        int args_len=0;
-        for (int i=0;i<tokens->size-1;i++){
-            args_len+=strlen(tokens->items[i])+1;    
-        }
-        bg_args[num_bg_jobs]=(char*)malloc(args_len);
-        
-        //copy background command tokens 
-        strcpy(bg_args[num_bg_jobs],tokens->items[i]); 
-        for (int i=1;i<tokens->size-1;i++){
-            strcat(bg_args[num_bg_jobs]," ");
-            strcat(bg_args[num_bg_jobs],tokens->items[i]);         
-        }
-         
-        num_bg_jobs++;
-        printf("[%i] %i",num_bg_jobs, job);
 
         return true;
+
         //will go back to main loop to execute
     }
     else{
+
+        bg_list[num_bg_jobs-1]=pid;
+        
+        printf("[%i] %i\n",num_bg_jobs,bg_list[num_bg_jobs-1]);
+        
+   
         //parent should continue to run
-        pid_t status=waitpid(pid,NULL,WNOHANG)
-        status_list[num_bg_jobs-1]=status;    //save status, may need to recheck this later? not sure
+        pid_t status=waitpid(pid,NULL,WNOHANG);
+        status_list[num_bg_jobs-1]=status;
+
         return false;
-        }
+        //background process still running
+
+    }
 
 }
+
