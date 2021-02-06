@@ -1,6 +1,6 @@
 bool is_Path(tokenlist * tokens)
 {
-int i;
+	int i;
 //for (i = 0; i < strlen(tokens->items[0]); i ++)
 
 char * path = getenv("PATH");

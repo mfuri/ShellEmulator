@@ -1,10 +1,43 @@
 #include "shell.h"
 
-bool redirection(tokenlist *tokens)
+void redirection(tokenlist *tokens)
 {
-  tokenlist * argument;                                         //token list for execution
+  tokenlist * argument = new_tokenlist();                                         //token list for execution
 
-  redflag = true;                                             //flag
+  //Add items to new tokenlist before < or >
+  bool iflag1, iflag2, oflag1, oflag2 = false;
+  char * file1, file2;
+
+
+  int i;
+
+  //CREATE NEW TOKENLIST WITHOUT FILENAMES OR I/O
+  for (i = 0; i < tokens->size; i++)
+  {
+    if (strcmp('<', tokens->items[i]) == 0 || strcmp('<', tokens->items[i]) == 0 || tokens->items[i] == NULL)
+      break;
+    add_token(argument, tokens->items[i]);
+  }
+
+  if (strcmp('<', tokens->items[i]) == 0)
+    iflag1 = true;
+  elseif (strcmp('>', tokens->items[i]) == 0)
+    oflag1 = true;
+  
+  i++;
+  file1 = (char *) malloc(strlen(tokens->items[i]));
+  strcpy(file1,tokens->items[i]);
+  i++;
+   if (strcmp('<', tokens->items[i]) == 0)
+    iflag2 = true;
+  elseif (strcmp('>', tokens->items[i]) == 0)
+    oflag2 = true;
+  i++;
+  if (iflag2 || oflag2)
+  {
+    file2 = (char *) malloc(strlen(tokens->items[i]));
+    strcpy(file2,tokens->items[i]);
+  }
   bool oflag = false; 
   bool iflag = false;
 
@@ -15,6 +48,11 @@ bool redirection(tokenlist *tokens)
 
   if(r_pid == 0)                                                //child process
   {
+    if()
+    {
+
+    }
+
     strcat(arg,tokens->items[0]);                 //add the command argument to the argument string
 
     for(int i = 1; i <tokens->size ; i++)
@@ -43,13 +81,20 @@ bool redirection(tokenlist *tokens)
     
     if(oflag = true)
     {
-      file = open(output, O_WRONLY | O_CREAT| O_TRUNC, 0777);       //anything left of < is an output, so create or overwrite fil
+      file1 = open(file1, O_WRONLY | O_CREAT| O_TRUNC, 0777);       //anything left of < is an output, so create or overwrite fil
+
+      // 
+      // iff(open(file1, O_WRONLY | O_CREAT| O_TRUNC, 0777) == 0)
+      //{
+            //enter code here
+      //}
       
       dup2(file, STDOUT_FILENO);
       //printf("about to call excec\n");
-   
     }
-    
+    //cat < test1 > test2
+    //cat test1 > test2 < test3
+
     if(iflag = true)
     {
       file2 = open(input, O_RDONLY, 0777);        //anything left of < is an output, so create or overwrite file
@@ -63,10 +108,10 @@ else
   {
     
    waitpid(r_pid, NULL, 0);
-   redflag = false;
+   
    close(file);
    close (file2);
     return true;
   }
-  
+  free (arguments);
 }
