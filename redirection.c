@@ -413,11 +413,10 @@ bool redirection(tokenlist *tokens)
 else
   {
     
-    waitpid(r_pid, NULL, 0);
-
+   waitpid(r_pid, NULL, 0);
+   redflag = false;
    close(file);
    close (file2);
-
     return true;
   }
   
