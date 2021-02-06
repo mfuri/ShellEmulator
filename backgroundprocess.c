@@ -1,11 +1,14 @@
-void check_background(){
+#include "shell.h"
+
+void check_background()
+{
 //for process in list of bg processes
     pid_t new_bg_list[10];
     char* new_bg_args[10];
-    int new_num=num_bg_jobs;
+    int new_num = num_bg_jobs;
 
     int j=0;
-    for (int i = 0; i<num_bg_jobs ;i++){
+    for (int i = 0; i < num_bg_jobs; i++){
         pid_t status=waitpid(bg_list[i],NULL,WNOHANG);
         if (status!=0){
             printf("[%i]   Done            %s\n",i+1,bg_args[i]);
@@ -48,14 +51,16 @@ bool run_background(tokenlist * tokens){
 
 }
 
-bool exec_background(tokenlist * tokens){
+bool exec_background(tokenlist * tokens)
+{
   
     num_bg_jobs++;
     bg_args[num_bg_jobs-1]=(char*)malloc(sizeof(tokens->items));
     strcpy(bg_args[num_bg_jobs-1],tokens->items[0]); 
-    for (int i=1;i<tokens->size;i++){
+    for (int i=1;i<tokens->size;i++)
+	{
         strcat(bg_args[num_bg_jobs-1]," ");
-        strcat(bg_args[num_bg_jobs-1],tokens->items[i]);           
+        strcat(bg_args[num_bg_jobs-1], tokens->items[i]);
     }
 
     pid_t pid=fork();

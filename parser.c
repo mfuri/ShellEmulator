@@ -5,8 +5,9 @@ void external_cmd(char * path, tokenlist * tokens);
 
 bool get_command(tokenlist *tokens);
 
-
-
+/**GLOBAL TIME VARIABLES**/
+time_t BEGIN, END, COMMAND_BEGIN, COMMAND_END;
+double CURRENT_RUN_TIME, TOTAL_RUN_TIME, LONGEST_RUN_TIME;
 
 int main(int argc, char const *argv[])
 {
@@ -30,21 +31,16 @@ int main(int argc, char const *argv[])
         tilde_Expand(tokens);
         env_Expand(tokens);
 
-        time(&end); 
-        totalruntime+=difftime(end,beginning);
- 
-        time(&beginning);
-
         bool builtin=get_command(tokens);		//if not built in command, search for external path
         if (builtin==false){
-            bool p=is_Path(tokens->items[0]);
+            //bool p=is_Path(tokens->items[0]);
         }
      
 		/**TIME END FOR EACH COMMAND**/
 		COMMAND_END = time(NULL);
         
 																//ends timing the shell
-        time_shell();      
+		command_Time();
                                                              //calculates runtime and adds to total and compares to longest running command
         if(exitshell(tokens)==true) 
         {
@@ -64,6 +60,29 @@ int main(int argc, char const *argv[])
     free(buffer);
     
     return 0;
+}
+
+//function definitions
+bool exitshell(tokenlist *tokens)
+{
+    char *c = "exit";
+    if(strcmp(c,tokens->items[0])==0)
+	{
+		printf("Shell ran for %d seconds and took %d seconds to execute one command.", TOTAL_RUN_TIME, LONGEST_RUN_TIME);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void command_Time()
+{
+    double temp;
+    temp = difftime(COMMAND_END, COMMAND_BEGIN);
+    if (LONGEST_RUN_TIME < temp)
+        LONGEST_RUN_TIME = temp;
 }
 
 bool is_Path(tokenlist * tokens)
