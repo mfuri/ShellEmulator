@@ -9,6 +9,7 @@ int NUM_JOBS = 10;
 pid_t BG_LIST[10];
 char * BG_ARGS[10];
 
+void jobs(tokenlist *tokens);
 
 int main(int argc, char const * argv[])
 {
@@ -266,3 +267,14 @@ bool exec_background(tokenlist * tokens)
 	}
 
 }
+
+void jobs(tokenlist *tokens){
+    //output list of active background process
+    //[job #]+ [CMD's pid]  [CMD's cmd line]
+
+    for (int i=0;i<num_bg_jobs;i++){
+        printf("[%i]+ %i  %s &\n",i+1,bg_list[i],bg_args[i]);
+
+    }
+}
+
