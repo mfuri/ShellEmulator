@@ -1,12 +1,10 @@
 #include "shell.h"
 
-char * EnvExpand(char * input);
-
 bool is_Path(tokenlist *tokens);
 void external_cmd(char * path, tokenlist * tokens);
 
 
-void cd(tokenlist *tokens)
+void cd(tokenlist *tokens);
 
 bool get_command(tokenlist *tokens);
 
@@ -28,10 +26,8 @@ int main(int argc, char const *argv[])
 
         tokenlist *tokens = get_tokens(buffer);
 
-        tilda_expand(tokens);		//note: I'm using these fns that expand all tokens currently bc I was getting compiler errors 
-        env_expand(tokens);		// when I tried to switch to using michaels fns. I think his implementation is cleaner tho, not sure 
-     					//why it wasn't working for me. my versions of the expansion fns are in a diff file just to not clutter things
-     					//but atm this file won't run without those functions added. 
+        tilde_Expand(tokens);
+        env_Expand(tokens);
 
         time(&end); 
         totalruntime+=difftime(end,beginning);
@@ -68,21 +64,6 @@ int main(int argc, char const *argv[])
     free(buffer);
     
     return 0;
-}
-
-char * EnvExpand(char * in)
-{
-	char * output;
-	if (in[0] == '$')
-	{
-		in++;
-		output = getenv(in);
-	}
-	else
-	    return in;
-	if (output == NULL)
-	    return in;
-	return output;
 }
 
 bool is_Path(tokenlist * tokens)
@@ -188,19 +169,3 @@ bool get_command(tokenlist *tokens){
     printf("not a built in command");
     return false;
 }
-      
-
-      
-
-      
-
-
-
-
-void echo(tokenlist *tokens){
-    
-    for (int i=1;i<tokens->size;i++){
-        printf("%s ",tokens->items[i]);   
-    }
-    printf("\n");
-  }

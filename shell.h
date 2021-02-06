@@ -9,19 +9,7 @@
 #include <wordexp.h>
 #include <time.h>
 
-/****C Files****/
-//Turns out we dont need
-/*
-#include "cd.c"
-#include "exit.c"
-#include "get_command.c"
-#include "is_path.c"
-#include "redirection.c"
-#include "tilda_expand.c"
-#include "env_expand+echo.c"
-#include "printprompt.c"*/
-
-
+/**Provided functions and struct**/
 typedef struct {
 	int size;
 	char **items;
@@ -33,7 +21,7 @@ tokenlist *get_tokens(char *input);
 tokenlist *new_tokenlist(void);
 void add_token(tokenlist *tokens, char *item);
 void free_tokens(tokenlist *tokens);
-
+/**Provided functions and struct**/
 
 bool is_Path(tokenlist *tokens);
 void external_cmd(char * path, tokenlist * tokens);
@@ -43,17 +31,14 @@ bool get_command(tokenlist *tokens);
 
 /****From External Files****/
 void cd(char * path);
-void echo(tokenlist *tokens);
-void env_expand(tokenlist *tokens);
+
 bool is_Path(char * input);
 bool redirection(tokenlist *tokens);
 
-
-
-
 /****Tested and work****/ /****Printing/Character Expansion Functions****/
 void print_Prompt(void);
-void tilda_Expand(tokenlist *tokens);
-char * EnvExpand(char * input);
+void tilda_Expand(tokenlist *);
+void env_Expand(tokenlist *);
+void Echo(tokenlist *);
 
 #endif
