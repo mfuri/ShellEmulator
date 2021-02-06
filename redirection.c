@@ -38,9 +38,7 @@ void redirection(tokenlist *tokens)
     file2 = (char *) malloc(strlen(tokens->items[i]));
     strcpy(file2,tokens->items[i]);
   }
-  bool oflag = false; 
-  bool iflag = false;
-  
+
   pid_t r_pid = fork();
 
   if(r_pid == 0)                                                //child process
@@ -49,24 +47,32 @@ void redirection(tokenlist *tokens)
     {
         if(iflag2)
         {
-          fpointer = fopen(file2, O_WRONLY | O_CREAT| O_TRUNC);
-          fpointer2 = fopen()
-          //fopen1
-          //fopen2
-          //if (filepointer1 == NULL || filepointer2 == NULL)
+          if(open((file2, O_RDONLY) != -1   && open(file2, O_RDONLY) != -1);       //anything left of > is an output, so create or overwrite fil
+          {
+            dup2(file2, STDIN_FILENO);
+          }
+         else
+         {
+          printf("could not write to file\n");
+          break;
+         }
           // error message
            // break:
            //spawning of the processes or whathaveyous
+
         }
         else if(oflag2)
         {
-          if(open(file2, O_WRONLY | O_CREAT| O_TRUNC) != -1   );       //anything left of > is an output, so create or overwrite fil
+          if(open(file2, O_WRONLY | O_CREAT| O_TRUNC) != -1   && open(file1, O_WRONLY | O_CREAT| O_TRUNC) != -1);       //anything left of > is an output, so create or overwrite fil
           {
             dup2(file2, STDOUT_FILENO);
+            
           }
-         
+         else
+         {
           printf("Error opening or creating file\n");
           break;
+         }
           //else
           //  error and break;
           
@@ -74,11 +80,31 @@ void redirection(tokenlist *tokens)
 
         if(iflag1)
         {
-          
+          if(open((file1, O_RDONLY) != -1);       //anything left of > is an output, so create or overwrite fil
+          {
+            dup2(file1, STDIN_FILENO);
+          }
+
+         else
+         {
+            printf("could not write to file\n");
+            break;
+         }
+
         }
         else if(oflag1)
         {
-          f_output = open(file2, O_WRONLY | O_CREAT| O_TRUNC, 0777);       //anything left of < is an output, so create or overwrite fil
+         
+         if(open(file1, O_WRONLY | O_CREAT| O_TRUNC) != -1);       //anything left of > is an output, so create or overwrite fil
+          {
+            dup2(file1, STDOUT_FILENO);
+          }
+          else
+          {
+          printf("Error opening or creating file\n");
+          break;
+          }
+
         }
 
     }

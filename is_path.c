@@ -30,7 +30,6 @@ bool is_Path(tokenlist * tokens)
 		free(fpath);
 		free(pathcopy);
 		return true;
-		
 	}
 
 	printf("Bash: command not found: %s\n", tokens->items[0]);
