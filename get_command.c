@@ -1,4 +1,4 @@
-bool get_command(tokenlist *tokens){
+/*bool get_command(tokenlist *tokens){
     if (strcmp(tokens->items[0],"cd")==0){
         cd(tokens->items[1]);
         return true;
@@ -22,4 +22,4 @@ bool get_command(tokenlist *tokens){
     }
     //printf("not a built in command");
     return false;
-}
+}*/
