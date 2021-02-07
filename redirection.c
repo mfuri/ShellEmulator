@@ -41,14 +41,13 @@ bool  *redirection_tokens(tokenlist *tokens)
 }
 void open_fd()
 {
-  //inside fork 2nd function
+  //inside fork chld
 
   if(iflag)
   {
-	  ifile = open(input, O_RDONLY);
-    if(ifile != -1  )       //anything left of > is an output, so create or overwrite fil
+    if(ifile != -1 )       //anything left of > is an output, so create or overwrite fil
     {
-		  dup2(ifile, STDIN_FILENO);
+          dup2(ifile, STDIN_FILENO);
     }
     else
     {
@@ -57,11 +56,11 @@ void open_fd()
   }
   else if(oflag)
   {
-	  ofile = open(output, O_WRONLY | O_CREAT| O_TRUNC);
+    
     if(ofile != -1)     //anything left of > is an output, so create or overwrite fil
-		{
-			dup2(ofile, STDOUT_FILENO);
-		}
+    {
+        dup2(ofile, STDOUT_FILENO);
+    }
 
     else
     {
@@ -69,19 +68,20 @@ void open_fd()
     }
           
   }
-    external_cmd(argument);
+    
     //return true;
 }
 // parent 
 void close_fd()
 {
-  //wait?
 
-  close(ifile);
-  close(ofile);
+
+    if(iflag){
+        close(ifile);
+    }
+
+    if (oflag){
+        close(ofile);
+    }
   
-  iflag = false;            //reset flags
-  oflag = false;
-  
-  free_tokens(argument);
 }
