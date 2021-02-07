@@ -10,6 +10,8 @@
 #include <time.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 /**Provided functions and struct**/
 typedef struct {
