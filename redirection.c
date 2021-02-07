@@ -83,11 +83,6 @@ void close_fd()
 
   close(ifile);
   close(ofile);
-
-  if(input != NULL)         
-    free (input);
-  if(output != NULL )
-    free (output);
   
   iflag = false;            //reset flags
   oflag = false;
