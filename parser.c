@@ -11,6 +11,11 @@ pid_t BG_LIST[10];
 char * BG_ARGS[10];
 time_t BG_STARTS[10];
 
+/**GLOBAL IO VARIABLES**/
+int ifile, ofile;
+char * input;
+char * output;
+bool iflag, oflag = false;
 
 int main(int argc, char const * argv[])
 {
@@ -45,13 +50,14 @@ int main(int argc, char const * argv[])
         oflag=false;
 
         if (!get_command(tokens)){
+	    bool is_bg=run_background(tokens);
             bool is_io=redirection_tokens(tokens);
 
             if (!is_Path(tokens)){
                 printf("Bash: command not found: %s\n", tokens->items[0]);
             }
             else{
-                bool is_bg=run_background(tokens);   //true if bg processing needed, removes & token
+                   //true if bg processing needed, removes & token
                 if (is_bg){
                     time(&bg_starts[num_bg_jobs]);
                     update_jobs(tokens);
