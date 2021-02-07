@@ -4,11 +4,12 @@
 int ifile, ofile;
 char * input, output;
 bool iflag, oflag = false;
-tokenlist * argument = new_tokenlist(); //token list for execution
+tokenlist * argument;  //token list for execution
 
 
 tokenlist  *redirection_tokens(tokenlist *tokens)
 {
+	argument = new_tokenlist();
   //tokenlist * argument = new_tokenlist();                                        //token list for execution
 
   //Add items to new tokenlist before < or >
