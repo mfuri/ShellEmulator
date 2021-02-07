@@ -11,11 +11,6 @@ pid_t BG_LIST[10];
 char * BG_ARGS[10];
 time_t BG_STARTS[10];
 
-/**GLOBAL IO VARIABLES**/
-int ifile, ofile;
-char * input;
-char * output;
-bool iflag, oflag = false;
 
 int main(int argc, char const * argv[])
 {
