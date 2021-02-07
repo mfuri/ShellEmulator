@@ -1,31 +1,25 @@
-/*#include "shell.h"
+bool get_command(tokenlist *tokens){
+    if (strcmp(tokens->items[0],"cd")==0){
+        cd(tokens->items[1]);
+        return true;
+    }
 
-typedef void (*fnptr)();
-fnptr get_command(tokenlist *tokens);
+    if (strcmp(tokens->items[0],"echo")==0){
+        echo(tokens);
+        return true;
+    }
 
-void commanderr();
-void ex();
+   
+    if (strcmp(tokens->items[0],"exit")==0){
+    //    ex();
+        return true;   
+    }
 
-fnptr get_command(tokenlist *tokens){
-    char * command=tokens->items[0];
-    if (strcmp(command,"echo")==0)
-        return echo;
-    if (strcmp(command, "exit")==0)
-        return ex;
-    if (strcmp(command,"cd")==0)
-        return cd;
+    if (strcmp(tokens->items[0],"jobs")==0){
+        jobs(tokens);
+        return true;
 
-    else
-        return commanderr;
+    }
+    //printf("not a built in command");
+    return false;
 }
-      
-  
-void commanderr(){
-    printf("\n%s\n", "Error: command not found");
-}
-
-void ex(){
-    //check for background process
-    //implement timer stuff
-    printf("\n%s\n", "Shell ran for ...");
-}*/
