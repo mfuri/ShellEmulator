@@ -27,12 +27,12 @@ void free_tokens(tokenlist *tokens);
 
 
 
-bool is_Path(tokenlist *tokens,bool bg);
-void external_cmd(char * path, tokenlist * tokens,bool bg);
+bool is_Path(tokenlist *tokens);
+void external_cmd(tokenlist * tokens,bool bg);
 bool get_command(tokenlist * tokens);
 
 //background processing
-void check_background();
+void check_background(void);
 bool run_background(tokenlist * tokens);
 void update_jobs(tokenlist * tokens);
 
@@ -49,13 +49,13 @@ bool redirection(tokenlist * tokens);
 
 /****Tested and work****/ /****Printing/Character Expansion Functions****/
 void print_Prompt(void);
-void tilde_Expand(tokenlist *);
-void env_Expand(tokenlist *);
+void tilde_Expand(tokenlist * tokens);
+void env_Expand(tokenlist *tokens);
 
 /**Built-Ins**/
-void cd(char * path);
+void cd(tokenlist * tokens);
 void echo(tokenlist * tokens);                                             //functions declerations
-void check_and_exit();
+void check_and_exit(void);
 void jobs(tokenlist *tokens);
 
 
