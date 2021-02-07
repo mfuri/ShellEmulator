@@ -41,7 +41,7 @@ tokenlist  *redirection_tokens(tokenlist *tokens)
 }
   
   
-void open_fd();
+void open_fd()
 {
   //inside fork 2nd function
 
@@ -74,7 +74,6 @@ void open_fd();
   }
     external_cmd(argument);
     return true;
-
 }
 // parent 
 void close_fd()
