@@ -1,10 +1,10 @@
 src = $(wildcard *.c)
 obj = $(src:.c=.o)
 
-LDFLAGS = -lGL -lglut -lpng -lz -lm
+#LDFLAGS = -lGL -lglut -lpng -lz -lm
 
 shell: $(obj)
-	$(CC) -o $@ $^ $(LDFLAGS)
+	$(CC) -o $@ $^ #$(LDFLAGS)
 
 .PHONY: clean
 clean:

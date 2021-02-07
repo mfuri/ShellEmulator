@@ -1,6 +1,6 @@
 #include "shell.h"
 
-void Echo(tokenlist * tokens)
+void echo(tokenlist * tokens)
 {
 	int i;
 	for (i = 1; i < tokens->size - 1; i++)

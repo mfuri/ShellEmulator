@@ -49,17 +49,20 @@ int main(int argc, char const * argv[])
         iflag=false;        //reset redirect flags for each new input
         oflag=false;
 
-        if (!get_command(tokens)){
-	    bool is_bg=run_background(tokens);
-            bool is_io=redirection_tokens(tokens);
+        if (!get_command(tokens))
+		{
+			bool is_bg = run_background(tokens);
+            bool is_io = redirect_tokens(tokens);
 
-            if (!is_Path(tokens)){
+            if (!is_Path(tokens))
+			{
                 printf("Bash: command not found: %s\n", tokens->items[0]);
             }
-            else{
+            else
+			{
                    //true if bg processing needed, removes & token
                 if (is_bg){
-                    time(&bg_starts[num_bg_jobs]);
+                    time(&BG_STARTS[NUM_JOBS]);
                     update_jobs(tokens);
                 }
 
@@ -193,9 +196,9 @@ void external_cmd(tokenlist * tokens,bool bg, bool io){
         }
         if(bg){
             //if bg processing:update job pid list, print job, continue immediately
-            bg_list[num_bg_jobs-1]=pid;
+            BG_LIST[NUM_JOBS-1]=pid;
         
-            printf("[%i] %i\n",num_bg_jobs,bg_list[num_bg_jobs-1]);
+            printf("[%i] %i\n",NUM_JOBS,BG_LIST[NUM_JOBS-1]);
             return;
         }
             //if no bg, wait for child to finish
@@ -205,11 +208,12 @@ void external_cmd(tokenlist * tokens,bool bg, bool io){
 }
 
 
-/*
-bool get_command(tokenlist *tokens){
+
+bool get_command(tokenlist *tokens)
+{
     if (strcmp(tokens->items[0],"cd") == 0)
 	{
-        cd(tokens->items[1]);
+        cd(tokens);
         return true;
     }
 
@@ -229,7 +233,7 @@ bool get_command(tokenlist *tokens){
         return true;
     }
     return false;
-}*/
+}
 
 void check_background()
 {
@@ -286,15 +290,15 @@ bool run_background(tokenlist * tokens){
 
 void update_jobs(tokenlist * tokens){
     
-    num_bg_jobs++; 
+    NUM_JOBS++;
     //update bg cmd line args list
     char * cmd_loc=strrchr(tokens->items[0],'/')+1;
-    bg_args[num_bg_jobs-1]=(char*)malloc(sizeof(cmd_loc));
-    strcpy(bg_args[num_bg_jobs-1],cmd_loc); 
+    BG_ARGS[NUM_JOBS-1]=(char*)malloc(sizeof(cmd_loc));
+    strcpy(BG_ARGS[NUM_JOBS-1],cmd_loc);
 
     for (int i=1;i<tokens->size;i++){
-        strcat(bg_args[num_bg_jobs-1]," ");
-        strcat(bg_args[num_bg_jobs-1],tokens->items[i]);           
+        strcat(BG_ARGS[NUM_JOBS-1]," ");
+        strcat(BG_ARGS[NUM_JOBS-1],tokens->items[i]);
     }
 
 
