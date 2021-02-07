@@ -30,7 +30,7 @@ void free_tokens(tokenlist *tokens);
 
 
 
-void external_cmd(tokenlist * tokens, bool bg);
+void external_cmd(tokenlist * tokens, bool bg, bool io);
 bool get_command(tokenlist * tokens);
 
 //background processing
@@ -45,7 +45,10 @@ bool exitshell(tokenlist *tokens);
 void time_command(time_t START, time_t STOP);    
 //bool redirection(tokenlist * tokens);
 
-
+//file io
+bool redirect_tokens(tokenlist *tokens);
+void open_fd(void);
+void close_fd(void);
 
 
 /****Tested and work****/ /****Printing/Character Expansion Functions****/
