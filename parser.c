@@ -41,8 +41,8 @@ int main(int argc, char const * argv[])
         tilde_Expand(tokens);			//token expansion
         env_Expand(tokens);
 
-        iflag=false;        //reset redirect flags for each new input
-        oflag=false;
+        iflag = false;        //reset redirect flags for each new input
+        oflag = false;
 
         if (!get_command(tokens))
 		{
