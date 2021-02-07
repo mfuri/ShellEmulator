@@ -26,16 +26,22 @@ void free_tokens(tokenlist *tokens);
 
 
 
-//bool is_Path(tokenlist *tokens);
-void external_cmd(char * path, tokenlist * tokens);
+
+bool is_Path(tokenlist *tokens,bool bg);
+void external_cmd(char * path, tokenlist * tokens,bool bg);
 bool get_command(tokenlist * tokens);
+
+//background processing
+void check_background();
+bool run_background(tokenlist * tokens);
+void update_jobs(tokenlist * tokens);
 
 
 /****From External Files****/
 //bool is_Path(char * input);
 bool redirection(tokenlist *tokens);
 bool exitshell(tokenlist *tokens);
-void command_Time(void);
+void time_command(time_t START, time_t STOP);    
 bool redirection(tokenlist * tokens);
 
 
@@ -47,8 +53,10 @@ void tilde_Expand(tokenlist *);
 void env_Expand(tokenlist *);
 
 /**Built-Ins**/
-void cd(tokenlist *);
-void echo(tokenlist *);
+void cd(char * path);
+void echo(tokenlist * tokens);                                             //functions declerations
+void check_and_exit();
+void jobs(tokenlist *tokens);
 
 
 #endif
