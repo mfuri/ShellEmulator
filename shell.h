@@ -23,6 +23,13 @@ tokenlist *get_tokens(char *input);
 tokenlist *new_tokenlist(void);
 void add_token(tokenlist *tokens, char *item);
 void free_tokens(tokenlist *tokens);
+
+//GLOBAL VARIABLES
+int ifile, ofile;
+char * input;
+char * output;
+bool iflag, oflag = false;
+
 /**Provided functions and struct**/
 
 
