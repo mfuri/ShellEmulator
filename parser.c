@@ -41,19 +41,25 @@ int main(int argc, char const * argv[])
         tilde_Expand(tokens);			//token expansion
         env_Expand(tokens);
 
-        bool is_bg=run_background(tokens);   	//true if bg processing needed, removes & token
-        if (is_bg)
-		{
-            time(&BG_STARTS[NUM_JOBS]);	//store bg cmd start time
-            update_jobs(tokens);		//update bg_jobs
-        }
+        iflag=false;        //reset redirect flags for each new input
+        oflag=false;
 
-        bool builtin = get_command(tokens);	//if built-in, execute
+        if (!get_command(tokens)){
+            bool is_io=redirection_tokens(tokens);
 
-        if (!builtin) //otherwise execute external command
-		{
-			//Commented out to compile
-            //bool p = is_Path(tokens, is_bg);
+            if (!is_Path(tokens)){
+                printf("Bash: command not found: %s\n", tokens->items[0]);
+            }
+            else{
+                bool is_bg=run_background(tokens);   //true if bg processing needed, removes & token
+                if (is_bg){
+                    time(&bg_starts[num_bg_jobs]);
+                    update_jobs(tokens);
+                }
+
+                external_cmd(tokens,is_bg,is_io);
+
+            }
 
         }
       
@@ -102,9 +108,10 @@ void time_command(time_t START,time_t STOP) //checks current run time and update
     }
 
 }
-/*
+
 bool is_Path(tokenlist * tokens)
 {
+    
     char * input=tokens->items[0];
     char * path = getenv("PATH");
 
@@ -130,7 +137,8 @@ bool is_Path(tokenlist * tokens)
             continue;
         }
 
-        external_cmd(fpath,tokens); //call fn to execute cmd
+        tokens->items[0] = (char*) realloc(tokens->items[0], strlen(fpath)+1);
+        strcpy(tokens->items[0], fpath);
 
         free(fpath);
         free(pathcopy);
@@ -138,49 +146,57 @@ bool is_Path(tokenlist * tokens)
 
     }
 
-    printf("Bash: command not found: %s\n", input);
+    
     free(fpath);
     free(pathcopy);
     return false;
 }
 
-void external_cmd(char * path, tokenlist * tokens)
-{
+void external_cmd(tokenlist * tokens,bool bg, bool io){ 
 
     char *x[tokens->size+1];
-    x[0]=path;
+    x[0]=tokens->items[0];
 
     for (int i=1;i<tokens->size;i++){
         x[i]=tokens->items[i];    
     }
 
     x[tokens->size]=NULL;
- 
-    int pid=fork();	
+    
+    //open files before fork
+    if(iflag){
+        ifile = open(input, O_RDONLY);
+    }
+    if (oflag){
+        ofile = open(output, O_WRONLY | O_CREAT| O_TRUNC);
+    }
+
+    pid_t pid=fork();
 
     if (pid==0){
         //in child
+        if(io){
+            open_fd();
+        }
+
         int e=execv(x[0],x);
 
     } else {
-    	if(bg){
+        if(io){
+            close_fd();
+        }
+        if(bg){
             //if bg processing:update job pid list, print job, continue immediately
-	    
-            BG_LIST[NUM_JOBS-1]=pid;
+            bg_list[num_bg_jobs-1]=pid;
         
-            printf("[%i] %i\n",NUM_JOBS,BG_LIST[NUM_JOBS-1]);
-        
-        }else{
+            printf("[%i] %i\n",num_bg_jobs,bg_list[num_bg_jobs-1]);
+            return;
+        }
             //if no bg, wait for child to finish
-	    
             waitpid(pid,NULL,0);    
-        }       
-           
-
+              
     }
 }
-
-*/
 
 
 /*
@@ -262,17 +278,22 @@ bool run_background(tokenlist * tokens){
 
 }
 
-void update_jobs(tokenlist * tokens)
-{
-  
-	NUM_JOBS++;
-	BG_ARGS[NUM_JOBS-1]=(char*)malloc(sizeof(tokens->items));
-	strcpy(BG_ARGS[NUM_JOBS-1],tokens->items[0]);
-	for (int i=1;i<tokens->size;i++)
-	{
-		strcat(BG_ARGS[NUM_JOBS-1]," ");
-		strcat(BG_ARGS[NUM_JOBS-1], tokens->items[i]);
-	}
+void update_jobs(tokenlist * tokens){
+    
+    num_bg_jobs++; 
+    //update bg cmd line args list
+    char * cmd_loc=strrchr(tokens->items[0],'/')+1;
+    bg_args[num_bg_jobs-1]=(char*)malloc(sizeof(cmd_loc));
+    strcpy(bg_args[num_bg_jobs-1],cmd_loc); 
+
+    for (int i=1;i<tokens->size;i++){
+        strcat(bg_args[num_bg_jobs-1]," ");
+        strcat(bg_args[num_bg_jobs-1],tokens->items[i]);           
+    }
+
+
+    
+
 
 }
 
