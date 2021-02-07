@@ -8,6 +8,8 @@
 #include <stdbool.h>
 #include <wordexp.h>
 #include <time.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 
 /**Provided functions and struct**/
 typedef struct {
@@ -27,7 +29,7 @@ void free_tokens(tokenlist *tokens);
 
 
 
-bool is_Path(tokenlist *tokens);
+
 void external_cmd(tokenlist * tokens, bool bg);
 bool get_command(tokenlist * tokens);
 
@@ -38,11 +40,10 @@ void update_jobs(tokenlist * tokens);
 
 
 /****From External Files****/
-//bool is_Path(char * input);
-bool redirection(tokenlist *tokens);
+//bool redirection(tokenlist *tokens);
 bool exitshell(tokenlist *tokens);
 void time_command(time_t START, time_t STOP);    
-bool redirection(tokenlist * tokens);
+//bool redirection(tokenlist * tokens);
 
 
 
@@ -57,6 +58,7 @@ void cd(tokenlist * tokens);
 void echo(tokenlist * tokens);                                             //functions declerations
 void check_and_exit(void);
 void jobs(tokenlist *tokens);
+bool is_Path(tokenlist *tokens);
 
 
 #endif

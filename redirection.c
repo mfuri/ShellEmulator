@@ -2,7 +2,7 @@
 
 //globals
 int ifile, ofile;
-char * input, output;
+char * input, * output;
 bool iflag, oflag = false;
 tokenlist * argument;  //token list for execution
 
@@ -20,14 +20,14 @@ tokenlist  *redirection_tokens(tokenlist *tokens)
   {
     if(strcmp("<", tokens->items[i])==0)
     { 
-      input = tokens->items[i+1];   
+      strcpy(input, tokens->items[i+1]);
       iflag = true;
     }
 	  
     else if(strcmp(">", tokens->items[i])==0)
     {
-      output = tokens->items[i+1];
-      oflag = true;
+		strcpy(output, tokens->items[i+1]);
+		oflag = true;
     }
     else
     {
@@ -47,33 +47,32 @@ void open_fd()
 
   if(iflag)
   {
-    if(ifile = open((input, O_RDONLY) != -1  );       //anything left of > is an output, so create or overwrite fil
+	  ifile = open(input, O_RDONLY);
+    if(ifile != -1  )       //anything left of > is an output, so create or overwrite fil
     {
-      dup2(ifile, STDIN_FILENO);
+		  dup2(ifile, STDIN_FILENO);
     }
     else
     {
       printf("Error opening or creating file.\n");
-      break;
     }     
   }
-
   else if(oflag)
   {
-    if(ofile = open(output, O_WRONLY | O_CREAT| O_TRUNC) != -1 );       //anything left of > is an output, so create or overwrite fil
-    {
-      dup2(ofile, STDOUT_FILENO);
-    }
+	  ofile = open(output, O_WRONLY | O_CREAT| O_TRUNC);
+    if(ofile != -1)     //anything left of > is an output, so create or overwrite fil
+		{
+			dup2(ofile, STDOUT_FILENO);
+		}
 
     else
     {
       printf("Error opening or creating file.\n");
-      break;
     }
           
   }
     external_cmd(argument);
-    return true;
+    //return true;
 }
 // parent 
 void close_fd()
