@@ -54,7 +54,7 @@ void open_fd()
       printf("Error opening or creating file.\n");
     }     
   }
-  else if(oflag)
+  if(oflag)
   {
     
     if(ofile != -1)     //anything left of > is an output, so create or overwrite fil
