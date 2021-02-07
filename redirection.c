@@ -4,43 +4,41 @@
 int ifile, ofile;
 char * input, * output;
 bool iflag, oflag = false;
-tokenlist * argument;  //token list for execution
 
 
-tokenlist  *redirection_tokens(tokenlist *tokens)
+bool  *redirection_tokens(tokenlist *tokens)
 {
-	argument = new_tokenlist();
-  //tokenlist * argument = new_tokenlist();                                        //token list for execution
-
-  //Add items to new tokenlist before < or >
-  int i; 
-  //CREATE NEW TOKENLIST WITHOUT FILENAMES OR I/O
+  int stop; //finds end point of cmd and arg tokens
   
-  for(i = 0; i < tokens->size ; i++)
+  for(int i = 0; i < tokens->size ; i++)
   {
     if(strcmp("<", tokens->items[i])==0)
     { 
-      strcpy(input, tokens->items[i+1]);
+      input=(char*)malloc(sizeof(tokens->items[i+1]));  
+      input = tokens->items[i+1];  
+      
       iflag = true;
+      stop=i;
     }
-	  
+      
     else if(strcmp(">", tokens->items[i])==0)
     {
-		strcpy(output, tokens->items[i+1]);
-		oflag = true;
+      output=(char*)malloc(sizeof(tokens->items[i+1]));  
+      output = tokens->items[i+1];
+      oflag = true;
+      stop=i;
     }
-    else
-    {
-      if(iflag == false && oflag == false)
-      {
-		  add_token(argument, tokens->items[i]);
-      }
-    }
+    
 
   }
+  if (iflag || oflag){
+    tokens->items[stop]=NULL;		//if io, update tokenlist accordingly
+    tokens->size=stop;
+   
+    return true;
+  }
+  return false;
 }
-  
-  
 void open_fd()
 {
   //inside fork 2nd function
