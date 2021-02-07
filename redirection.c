@@ -1,17 +1,21 @@
 #include "shell.h"
 
-void redirection(tokenlist *tokens)
+//globals
+int ifile, ofile;
+char * input, output;
+bool iflag, oflag = false;
+tokenlist * argument = new_tokenlist() //token list for execution
+
+
+tokenlist  *redirection_tokens(tokenlist *tokens)
 {
-  tokenlist * argument = new_tokenlist();                                         //token list for execution
+  //tokenlist * argument = new_tokenlist();                                        //token list for execution
 
   //Add items to new tokenlist before < or >
-  bool iflag, oflag = false;
-  char * input, output;
-  int i, ifile, ofile;
-
+  int i; 
   //CREATE NEW TOKENLIST WITHOUT FILENAMES OR I/O
   
-  for(int i = 0; i < tokens->size ; i++)
+  for(i = 0; i < tokens->size ; i++)
   {
     if(strcmp("<", tokens->items[i])==0)
     { 
@@ -31,7 +35,15 @@ void redirection(tokenlist *tokens)
       add_token(argument, tokens->items[i]);
       }
     }
+
   }
+}
+  
+  
+void open_fd();
+{
+  //inside fork 2nd function
+
   if(iflag)
   {
     if(ifile = open((input, O_RDONLY) != -1  );       //anything left of > is an output, so create or overwrite fil
@@ -63,7 +75,18 @@ void redirection(tokenlist *tokens)
     return true;
   }
 
-//wait?
-//close?
-  free (arguments);
+}
+// parent 
+void close_fd()
+{
+  //wait?
+
+  close(ifile);
+  close(ofile);
+
+  if(input != NULL)
+    free (input);
+  if(output != NULL )
+    free (output);
+  free_tokens(arguments);
 }
