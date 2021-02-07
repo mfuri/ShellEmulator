@@ -1,96 +1,103 @@
 #include "shell.h"
 
 /**GLOBAL TIME VARIABLES**/
-time_t BEGIN, END, COMMAND_BEGIN, COMMAND_END;
-double CURRENT_RUN_TIME, TOTAL_RUN_TIME, LONGEST_RUN_TIME;
+time_t CMD_START, CMD_STOP,SHELL_START, SHELL_STOP, BG_STOP;                                             //global variables
+int currentruntime=0;
+int longestruntime=0;   
 
 /**GLOBAL PROCESS VARIABLES**/
 int NUM_JOBS = 10;
 pid_t BG_LIST[10];
 char * BG_ARGS[10];
+time_t bg_starts[10];
 
-void jobs(tokenlist *tokens);
 
 int main(int argc, char const * argv[])
 {
-    size_t size = 10;
-    char * buffer;
-    
-	/*TIME BEGIN FOR WHOLE SHELL**/
-	BEGIN = time(NULL);
-   
+    time(&SHELL_START);
+	
     while (1)
-    //do
-    {
-        print_Prompt();
-        buffer = get_input();
-	//prevents seg fault if user hits enter or space enter
+    {	//getting user input and checking bg jobs
+	    
+        check_background();
+        PrintPrompt();
+
+        char * buffer=get_input();
+
+        check_background();
+
         while(buffer[0]==0||buffer[0]==32){
-			print_Prompt();
+            check_background();
+            PrintPrompt();
 
             buffer=get_input();
-
         }
-		/**TIME BEGIN FOR EACH COMMAND**/
-		COMMAND_BEGIN = time(NULL);
-		
+
+	
+        time(&CMD_START);			//start cmd timing
+
         tokenlist *tokens = get_tokens(buffer);
 
-        tilde_Expand(tokens);
-        env_Expand(tokens);
+        Tilde_expand(tokens);			//token expansion
+        Env_expand(tokens);
 
-        bool builtin=get_command(tokens);		//if not built in command, search for external path
-        if (builtin==false){
-            //bool p=is_Path(tokens->items[0]);
+        bool is_bg=run_background(tokens);   	//true if bg processing needed, removes & token
+        if (is_bg){
+            time(&bg_starts[num_bg_jobs]);	//store bg cmd start time
+            update_jobs(tokens);		//update bg_jobs
         }
-     
-		/**TIME END FOR EACH COMMAND**/
-		COMMAND_END = time(NULL);
-        
-																//ends timing the shell
-		command_Time();
-                                                             //calculates runtime and adds to total and compares to longest running command
-        if(exitshell(tokens)==true) 
-        {
-            waitpid(-1,NULL,0);
+
+        bool builtin=get_command(tokens);	//if built-in, execute
+
+        if (!builtin){				//otherwise execute external command
+            bool p=is_Path(tokens,is_bg);
+
+        }
+      
+        time(&CMD_STOP); 			//end cmd timing
+                                                           
+        time_command(CMD_START,CMD_STOP); 	//update currentlongest cmd run time
+              
+        if(exitshell(tokens)==true) 		//if cmd is "exit"
+        {   
+            check_and_exit();			//waits for bg processes and prints exit statement
             break;
         }
 
-       /*for (int i = 0; i < tokens->size; i++) {
-       printf("token %d: (%s)\n", i, tokens->items[i]);
-        }*/
-       
-        
-        free_tokens(tokens);
-    }
-    //while (strcmp(buffer, "exit") != 0);
 
-    free(buffer);
-    
+
+        free(buffer);
+        free_tokens(tokens);
+
+        
+    }
+
     return 0;
 }
 
 //function definitions
-bool exitshell(tokenlist *tokens)
-{
+bool exitshell(tokenlist *tokens) //returns true if command is exit
+{                                 
     char *c = "exit";
     if(strcmp(c,tokens->items[0])==0)
-	{
-		printf("Shell ran for %f seconds and took %f seconds to execute one command.", TOTAL_RUN_TIME, LONGEST_RUN_TIME);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+    {      
+        return true;
+    }
+    else
+    {
+        return false;
+    }    
 }
 
-void command_Time()
+void time_command(time_t START,time_t STOP) //checks current run time and updates longest run time
 {
-    double temp;
-    temp = difftime(COMMAND_END, COMMAND_BEGIN);
-    if (LONGEST_RUN_TIME < temp)
-        LONGEST_RUN_TIME = temp;
+    currentruntime = difftime(STOP,START);
+
+    if(longestruntime<currentruntime)
+    {   
+        longestruntime = currentruntime;
+    }
+
 }
 /*
 bool is_Path(tokenlist * tokens)
@@ -197,6 +204,8 @@ void check_background()
 	for (int i = 0; i < NUM_JOBS; i++){
 		pid_t status=waitpid(BG_LIST[i],NULL,WNOHANG);
 		if (status!=0){
+			time(&BG_STOP);
+            		time_command(bg_starts[i],BG_STOP);
 			printf("[%i]   Done            %s\n",i+1,BG_ARGS[i]);
 			//proccess finished
 			new_num--;
@@ -277,4 +286,22 @@ void jobs(tokenlist *tokens){
 
     }
 }
+
+void check_and_exit(){
+    //waits for bg jobs to complete and exits shell
+    while(num_bg_jobs!=0){
+         waitpid(-1,NULL,0);                 //wait for bg jobs to finish
+         check_background();                 //prints any jobs that just completed/checks those run times
+    }
+
+    time_command(CMD_START,CMD_STOP);       //checks last cmd's run time
+    time(&SHELL_STOP);                      //ends shell timing
+    int shell_time=difftime(SHELL_STOP,SHELL_START);
+    printf("Shell ran for %i seconds and took %i seconds to execute one command.\n",shell_time, longestruntime);
+    return;
+}
+
+
+
+
 
