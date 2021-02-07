@@ -6,7 +6,7 @@ char * input, * output;
 bool iflag, oflag = false;
 
 
-bool redirection_tokens(tokenlist *tokens)
+bool redirect_tokens(tokenlist *tokens)
 {
   int stop; //finds end point of cmd and arg tokens
   
