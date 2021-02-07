@@ -160,8 +160,18 @@ void external_cmd(char * path, tokenlist * tokens)
         int e=execv(x[0],x);
 
     } else {
-            //printf("i am a parent\n");
-            waitpid(pid,NULL,0);
+    	if(bg){
+            //if bg processing:update job pid list, print job, continue immediately
+	    
+            bg_list[num_bg_jobs-1]=pid;
+        
+            printf("[%i] %i\n",num_bg_jobs,bg_list[num_bg_jobs-1]);
+        
+        }else{
+            //if no bg, wait for child to finish
+	    
+            waitpid(pid,NULL,0);    
+        }       
            
 
     }
@@ -185,11 +195,14 @@ bool get_command(tokenlist *tokens){
 
    
     if (strcmp(tokens->items[0],"exit")==0){
- 
+ 	//wait for exit function to be called later
         return true;
         
     }
-    printf("not a built in command");
+    if (strcmp(tokens->items[0],"jobs")==0){
+        jobs(tokens);
+        return true;
+    }
     return false;
 }*/
 
@@ -246,7 +259,7 @@ bool run_background(tokenlist * tokens){
 
 }
 
-bool exec_background(tokenlist * tokens)
+void update_jobs(tokenlist * tokens)
 {
   
 	NUM_JOBS++;
@@ -256,23 +269,6 @@ bool exec_background(tokenlist * tokens)
 	{
 		strcat(BG_ARGS[NUM_JOBS-1]," ");
 		strcat(BG_ARGS[NUM_JOBS-1], tokens->items[i]);
-	}
-
-	pid_t pid=fork();
-	
-	if (pid==0){
-		//execute in child
-		return true;
-
-		//will go back to main loop to execute
-	}
-	else{
-
-		BG_LIST[NUM_JOBS-1]=pid;
-		
-		printf("[%i] %i\n",NUM_JOBS,BG_LIST[NUM_JOBS-1]);
-	   
-		return false;
 	}
 
 }
