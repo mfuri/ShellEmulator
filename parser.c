@@ -2,14 +2,14 @@
 
 /**GLOBAL TIME VARIABLES**/
 time_t CMD_START, CMD_STOP,SHELL_START, SHELL_STOP, BG_STOP;                                             //global variables
-int currentruntime=0;
-int longestruntime=0;   
+int currentruntime = 0;
+int longestruntime = 0;
 
 /**GLOBAL PROCESS VARIABLES**/
 int NUM_JOBS = 10;
 pid_t BG_LIST[10];
 char * BG_ARGS[10];
-time_t bg_starts[10];
+time_t BG_STARTS[10];
 
 
 int main(int argc, char const * argv[])
@@ -20,7 +20,7 @@ int main(int argc, char const * argv[])
     {	//getting user input and checking bg jobs
 	    
         check_background();
-        PrintPrompt();
+        print_Prompt();
 
         char * buffer=get_input();
 
@@ -28,7 +28,7 @@ int main(int argc, char const * argv[])
 
         while(buffer[0]==0||buffer[0]==32){
             check_background();
-            PrintPrompt();
+            print_Prompt();
 
             buffer=get_input();
         }
@@ -38,19 +38,22 @@ int main(int argc, char const * argv[])
 
         tokenlist *tokens = get_tokens(buffer);
 
-        Tilde_expand(tokens);			//token expansion
-        Env_expand(tokens);
+        tilde_Expand(tokens);			//token expansion
+        env_Expand(tokens);
 
         bool is_bg=run_background(tokens);   	//true if bg processing needed, removes & token
-        if (is_bg){
-            time(&bg_starts[num_bg_jobs]);	//store bg cmd start time
+        if (is_bg)
+		{
+            time(&BG_STARTS[NUM_JOBS]);	//store bg cmd start time
             update_jobs(tokens);		//update bg_jobs
         }
 
-        bool builtin=get_command(tokens);	//if built-in, execute
+        bool builtin = get_command(tokens);	//if built-in, execute
 
-        if (!builtin){				//otherwise execute external command
-            bool p=is_Path(tokens,is_bg);
+        if (!builtin) //otherwise execute external command
+		{
+			//Commented out to compile
+            //bool p = is_Path(tokens, is_bg);
 
         }
       
@@ -163,9 +166,9 @@ void external_cmd(char * path, tokenlist * tokens)
     	if(bg){
             //if bg processing:update job pid list, print job, continue immediately
 	    
-            bg_list[num_bg_jobs-1]=pid;
+            BG_LIST[NUM_JOBS-1]=pid;
         
-            printf("[%i] %i\n",num_bg_jobs,bg_list[num_bg_jobs-1]);
+            printf("[%i] %i\n",NUM_JOBS,BG_LIST[NUM_JOBS-1]);
         
         }else{
             //if no bg, wait for child to finish
@@ -218,7 +221,7 @@ void check_background()
 		pid_t status=waitpid(BG_LIST[i],NULL,WNOHANG);
 		if (status!=0){
 			time(&BG_STOP);
-            		time_command(bg_starts[i],BG_STOP);
+            		time_command(BG_STARTS[i],BG_STOP);
 			printf("[%i]   Done            %s\n",i+1,BG_ARGS[i]);
 			//proccess finished
 			new_num--;
@@ -277,23 +280,25 @@ void jobs(tokenlist *tokens){
     //output list of active background process
     //[job #]+ [CMD's pid]  [CMD's cmd line]
 
-    for (int i=0;i<num_bg_jobs;i++){
-        printf("[%i]+ %i  %s &\n",i+1,bg_list[i],bg_args[i]);
+    for (int i=0;i<NUM_JOBS;i++){
+        printf("[%i]+ %i  %s &\n",i+1,BG_LIST[i],BG_ARGS[i]);
 
     }
 }
 
-void check_and_exit(){
+void check_and_exit()
+{
     //waits for bg jobs to complete and exits shell
-    while(num_bg_jobs!=0){
+    while(NUM_JOBS!=0)
+	{
          waitpid(-1,NULL,0);                 //wait for bg jobs to finish
          check_background();                 //prints any jobs that just completed/checks those run times
     }
 
     time_command(CMD_START,CMD_STOP);       //checks last cmd's run time
     time(&SHELL_STOP);                      //ends shell timing
-    int shell_time=difftime(SHELL_STOP,SHELL_START);
-    printf("Shell ran for %i seconds and took %i seconds to execute one command.\n",shell_time, longestruntime);
+    double shell_time = difftime(SHELL_STOP,SHELL_START);
+    printf("Shell ran for %f seconds and took %d seconds to execute one command.\n", shell_time, longestruntime);
     return;
 }
 

@@ -28,7 +28,7 @@ void free_tokens(tokenlist *tokens);
 
 
 bool is_Path(tokenlist *tokens);
-void external_cmd(tokenlist * tokens,bool bg);
+void external_cmd(tokenlist * tokens, bool bg);
 bool get_command(tokenlist * tokens);
 
 //background processing

@@ -4,7 +4,7 @@
 int ifile, ofile;
 char * input, output;
 bool iflag, oflag = false;
-tokenlist * argument = new_tokenlist() //token list for execution
+tokenlist * argument = new_tokenlist(); //token list for execution
 
 
 tokenlist  *redirection_tokens(tokenlist *tokens)
@@ -22,17 +22,17 @@ tokenlist  *redirection_tokens(tokenlist *tokens)
       input = tokens->items[i+1];   
       iflag = true;
     }
+	  
     else if(strcmp(">", tokens->items[i])==0)
     {
       output = tokens->items[i+1];
       oflag = true;
-   
     }
     else
     {
       if(iflag == false && oflag == false)
       {
-      add_token(argument, tokens->items[i]);
+		  add_token(argument, tokens->items[i]);
       }
     }
 
@@ -52,7 +52,7 @@ void open_fd();
     }
     else
     {
-      printf("Error opening or creating file\n");
+      printf("Error opening or creating file.\n");
       break;
     }     
   }
@@ -66,14 +66,13 @@ void open_fd();
 
     else
     {
-      printf("Error opening or creating file\n");
+      printf("Error opening or creating file.\n");
       break;
     }
           
   }
     external_cmd(argument);
     return true;
-  }
 
 }
 // parent 
@@ -92,5 +91,5 @@ void close_fd()
   iflag = false;            //reset flags
   oflag = false;
   
-  free_tokens(arguments);
+  free_tokens(argument);
 }
