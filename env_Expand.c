@@ -16,7 +16,6 @@ void env_Expand(tokenlist *tokens)
 			char * env = getenv(buf);
 			
 			//GETENV returns NULL on failure
-			
 			if (env != NULL)
 			{
 				tokens->items[i]=realloc(tokens->items[i],strlen(env)+1);

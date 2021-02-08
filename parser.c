@@ -3,90 +3,93 @@
 
 
 int main(int argc, char const * argv[])
-{	
-    time(&SHELL_START);
-
-	NUM_JOBS=0;
-	currentruntime=0;
-	longestruntime=0;
-	
+{
+  //Start Timer and Initialize Global Variables
+  time(&SHELL_START);
+  NUM_JOBS=0;
+  currentruntime=0;
+  longestruntime=0;
+  
     while (1)
-    {	//getting user input and checking bg jobs
-		int counter = 0;
-	    if (counter != 0)
-			check_background();
-		counter++;
-        print_Prompt();
-
-        char * buffer=get_input();
-
+    {
+      // Gets user input and checks bg jobs
+      int counter = 0;
+      if (counter != 0)
         check_background();
-
-        while(buffer[0]==0||buffer[0]==32){
+      counter++;
+      
+      // Presents user with prompt and runs command
+      // from provided functions
+      print_Prompt();
+      char * buffer=get_input();
+      
+      check_background();
+      
+      // Allows NULL input in our shell
+      while(buffer[0] == 0 || buffer[0] == 32)
+      {
             check_background();
             print_Prompt();
-
             buffer=get_input();
-        }
-
-	
-        time(&CMD_START);			//start cmd timing
-
-        tokenlist *tokens = get_tokens(buffer);
-
-        tilde_Expand(tokens);			//token expansion
-        env_Expand(tokens);
-
-        iflag = false;        //reset redirect flags for each new input
-        oflag = false;
-
-        if (!get_command(tokens))
-	{
-		bool is_bg = run_background(tokens);
-            	bool is_io = redirect_tokens(tokens);
-		bool is_pipe=pipe_tokens(tokens);
-		
-		if (is_pipe){
-                
-                pipe_exec(is_bg,tokens);
-                
-            }
-
-            else if (!is_Path(tokens)){
-                printf("Bash: command not found: %s\n", tokens->items[0]);
-            }
-
-            else{
-                   //true if bg processing needed, removes & token
-                if (is_bg){
-                    time(&BG_STARTS[NUM_JOBS]);
-                    update_jobs(tokens);
-                }
-
-                external_cmd(tokens,is_bg,is_io);
-
-            }
-
-        }
+      }
       
-        time(&CMD_STOP); 			//end cmd timing
-                                                           
-        time_command(CMD_START,CMD_STOP); 	//update currentlongest cmd run time
-              
-        if(exitshell(tokens)==true) 		//if cmd is "exit"
-        {   
+      time(&CMD_START);			//start cmd timing
+      
+      // Creates tokenlist with provided functions
+      tokenlist *tokens = get_tokens(buffer);
+      
+      // Expands any necessary tokens within the tokenlist
+      // tokens beginning with "~" or "$"
+      tilde_Expand(tokens);
+      env_Expand(tokens);
+      
+      // Reset redirect flags for each new input
+      iflag = false;
+      oflag = false;
+      
+      // Checks whether the commands require background processing, piping, or I/O redirection
+      // Executes commands
+      if (!get_command(tokens))
+      {
+        bool is_bg = run_background(tokens);
+        bool is_io = redirect_tokens(tokens);
+        bool is_pipe=pipe_tokens(tokens);
+        
+          if (is_pipe)
+          {
+            pipe_exec(is_bg,tokens);
+          }
+          else if (!is_Path(tokens))
+          {
+            printf("Bash: command not found: %s\n", tokens->items[0]);
+          }
+          else
+          {
+            //true if bg processing needed, removes & token
+            if (is_bg)
+            {
+              time(&BG_STARTS[NUM_JOBS]);
+              update_jobs(tokens);
+            }
+
+            external_cmd(tokens,is_bg,is_io);
+          }
+
+      }
+      
+      time(&CMD_STOP); 			//end cmd timing
+      time_command(CMD_START,CMD_STOP); 	//update currentlongest cmd run time
+      
+      // End of While loop if "exit", shell ends and calculates running times
+      if(exitshell(tokens) == true)
+      {
             check_and_exit();			//waits for bg processes and prints exit statement
             break;
-        }
-
-
-
-        free(buffer);
-        free_tokens(tokens);
-
-        
+      }
+      
+      free(buffer);
+      free_tokens(tokens);
     }
-
     return 0;
 }
 
@@ -94,100 +97,93 @@ int main(int argc, char const * argv[])
 bool exitshell(tokenlist *tokens) //returns true if command is exit
 {                                 
     char *c = "exit";
-    if(strcmp(c,tokens->items[0])==0)
-    {      
-        return true;
-    }
+    if(strcmp(c, tokens->items[0]) == 0)
+    { return true; }
     else
-    {
-        return false;
-    }    
+    { return false; }
 }
 
 void time_command(time_t START,time_t STOP) //checks current run time and updates longest run time
 {
     currentruntime = difftime(STOP,START);
-
-    if(longestruntime < currentruntime)
-    {   
-        longestruntime = currentruntime;
-    }
+    if (longestruntime < currentruntime)
+    { longestruntime = currentruntime; }
 
 }
 
+// Runs external commands when necessary
+void external_cmd(tokenlist * tokens, bool bg, bool io)
+{
+    char * x[tokens->size + 1];
+    x[0] = tokens->items[0];
 
-void external_cmd(tokenlist * tokens, bool bg, bool io){
+    for (int i=1; i < tokens->size; i++)
+    { x[i]=tokens->items[i]; }
 
-    char *x[tokens->size+1];
-    x[0]=tokens->items[0];
-
-    for (int i=1;i<tokens->size;i++){
-        x[i]=tokens->items[i];    
-    }
-
-    x[tokens->size]=NULL;
+    x[tokens->size] = NULL;
     
     //open files before fork
-    if(iflag){
-        ifile = open(input, O_RDONLY);
-    }
-    if (oflag){
-        ofile = open(output, O_WRONLY | O_CREAT| O_TRUNC, 0777);
-    }
+    if(iflag)
+    { ifile = open(input, O_RDONLY); }
+    if (oflag)
+    { ofile = open(output, O_WRONLY | O_CREAT| O_TRUNC, 0777); }
 
     pid_t pid=fork();
 
-    if (pid==0){
-        //in child
-        if(io){
-            open_fd();
-        }
-
-        int e=execv(x[0],x);
-
-    } else {
-        if(io){
-            close_fd();
-        }
-        if(bg){
-            //if bg processing:update job pid list, print job, continue immediately
-            BG_LIST[NUM_JOBS-1]=pid;
-        
-            printf("[%i] %i\n",NUM_JOBS,BG_LIST[NUM_JOBS-1]);
-            return;
-        }
-            //if no bg, wait for child to finish
-            waitpid(pid,NULL,0);    
-              
+    if (pid == 0)
+    {
+      //in child
+      if (io)
+      { open_fd(); }
+      int e = execv(x[0], x);
+    }
+    
+    else
+    {
+      if (io)
+      {
+        close_fd();
+      }
+      if (bg)
+      {
+        //if bg processing:update job pid list, print job, continue immediately
+        BG_LIST[NUM_JOBS-1]=pid;
+        printf("[%i] %i\n",NUM_JOBS,BG_LIST[NUM_JOBS-1]);
+        return;
+      }
+        //if no bg, wait for child to finish
+        waitpid(pid,NULL,0);
     }
 }
 
 
-
+// Check if command is a built-in, if so, runs the command
 bool get_command(tokenlist *tokens)
 {
-    if (strcmp(tokens->items[0],"cd") == 0)
-	{
-        cd(tokens);
-        return true;
-    }
-
-    if (strcmp(tokens->items[0],"echo")==0){
-		echo_Function(tokens);
-        return true;
-    }
-
-   
-    if (strcmp(tokens->items[0],"exit")==0){
- 	//wait for exit function to be called later
-        return true;
-        
-    }
-    if (strcmp(tokens->items[0],"jobs")==0){
-        jobs(tokens);
-        return true;
-    }
-    return false;
+  if (strcmp(tokens->items[0], "cd") == 0)
+  {
+    cd(tokens);
+    return true;
+  }
+  
+  else if (strcmp(tokens->items[0], "echo") == 0)
+  {
+    echo_Function(tokens);
+    return true;
+  }
+  
+  else if (strcmp(tokens->items[0],"exit") == 0)
+  {
+    //wait for exit function to be called later
+    return true;
+  }
+  
+  else if (strcmp(tokens->items[0], "jobs") == 0)
+  {
+    jobs(tokens);
+    return true;
+  }
+  return false;
 }
 
 void check_background()

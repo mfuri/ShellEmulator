@@ -1,5 +1,6 @@
 #include "shell.h"
 
+/**Functions provided by professor**/
 tokenlist *new_tokenlist(void)
 {
 	tokenlist *tokens = (tokenlist *) malloc(sizeof(tokenlist));
