@@ -203,7 +203,7 @@ void check_background()
 		if (status!=0){
 			time(&BG_STOP);
             		time_command(BG_STARTS[i],BG_STOP);
-			printf("[%i]+  %s &\n",i+1,bg_args[i]);
+			printf("[%i]+  %s &\n",i+1,BG_ARGS[i]);
 			//proccess finished
 			new_num--;
 
