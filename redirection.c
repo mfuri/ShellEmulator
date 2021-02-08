@@ -18,7 +18,9 @@ bool redirect_tokens(tokenlist *tokens)
       input = tokens->items[i+1];  
       
       iflag = true;
-      stop=i;
+      if (!oflag){
+            stop=i;
+       }
     }
       
     else if(strcmp(">", tokens->items[i])==0)
@@ -26,7 +28,9 @@ bool redirect_tokens(tokenlist *tokens)
       output=(char*)malloc(sizeof(tokens->items[i+1]));  
       output = tokens->items[i+1];
       oflag = true;
-      stop=i;
+      if (!iflag){
+            stop=i;
+      }
     }
     
 
