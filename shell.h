@@ -30,7 +30,7 @@ void free_tokens(tokenlist *tokens);
 int ifile, ofile;
 char * input;
 char * output;
-bool iflag, oflag = false;
+bool iflag, oflag;
 
 /**Provided functions and struct**/
 
