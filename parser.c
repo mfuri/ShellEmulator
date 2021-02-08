@@ -203,7 +203,7 @@ void check_background()
 		if (status!=0){
 			time(&BG_STOP);
             		time_command(BG_STARTS[i],BG_STOP);
-			printf("[%i]   Done            %s\n",i+1,BG_ARGS[i]);
+			printf("[%i]+  %s &\n",i+1,bg_args[i]);
 			//proccess finished
 			new_num--;
 
@@ -251,7 +251,7 @@ void update_jobs(tokenlist * tokens){
 
     if(cmd_loc==NULL){  //if first token has not been expanded
         //add first token as is
-        printf("\nfirst token is %s\n",tokens->items[0]);
+        
         BG_ARGS[NUM_JOBS]=(char*)malloc(sizeof(tokens->items[0]));
         strcpy(BG_ARGS[NUM_JOBS-1],tokens->items[0]);
     }
