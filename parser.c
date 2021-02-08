@@ -1,13 +1,5 @@
 #include "shell.h"
 
-/**GLOBAL TIME VARIABLES**/
-time_t CMD_START, CMD_STOP,SHELL_START, SHELL_STOP, BG_STOP;                                             //global variables
-int currentruntime = 0;
-int longestruntime = 0;
-
-
-
-
 
 int main(int argc, char const * argv[])
 {
