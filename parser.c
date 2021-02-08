@@ -5,11 +5,7 @@ time_t CMD_START, CMD_STOP,SHELL_START, SHELL_STOP, BG_STOP;                    
 int currentruntime = 0;
 int longestruntime = 0;
 
-/**GLOBAL PROCESS VARIABLES**/
-int NUM_JOBS = 10;
-pid_t BG_LIST[10];
-char * BG_ARGS[10];
-time_t BG_STARTS[10];
+
 
 
 
