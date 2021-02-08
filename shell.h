@@ -36,6 +36,7 @@ char * output;
 bool iflag, oflag;
 
 
+//piping globals
 
 
 void external_cmd(tokenlist * tokens, bool bg, bool io);
@@ -56,6 +57,9 @@ bool redirect_tokens(tokenlist *tokens);
 void open_fd(void);
 void close_fd(void);
 
+//piping
+bool pipe_tokens(tokenlist *tokens);
+void pipe_exec(bool bg, tokenlist * tokens);
 
 /****Tested and work****/ /****Printing/Character Expansion Functions****/
 void print_Prompt(void);
