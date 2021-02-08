@@ -42,8 +42,15 @@ Readme.md and gitcommitlog.md are included in the
 	-	env_Expand()
 	-	shell.h
 
+-	James Hill contributed to:
+	- 	checks_and_exit()
+	- 	redirect_tokens()
+	- 	openfd()
+	- 	closefd()
+	-	time_command()
+	-	external_cmd()
+	- 	shell.h
 -	
--
 
 # How to compile with Makefile
 -	To compile, the command is "make shell". This will create object files as well
