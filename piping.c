@@ -16,8 +16,6 @@ bool pipe_tokens(tokenlist *tokens){
        CMDS[i]=(char*)malloc(sizeof(tokens->items)); 
     }
     bool new_cmd=true;
-    
-    
 
     bool ret=false;;
 
@@ -45,90 +43,128 @@ bool pipe_tokens(tokenlist *tokens){
 
 }
 
-void pipe_exec()
+void pipe_exec(bool bg,tokenlist * tokens)
 {
-//this works for one pipe but not 2. I tried added 3rd command implemntation not sure whats going wrong. 
-//since theirs multiple forks im planning to just have this call is_Path and then skip the calls to is_Path and external cmd
-//neads to add flag for bg processing
-
-    tokenlist * cmd1=get_tokens(CMDS[0]);         //gets command tokens ist from list of string cmd lines
-    tokenlist * cmd2=get_tokens(CMDS[1]);       
-    tokenlist * cmd3;
+    tokenlist * cmd_list[num_pipes+1];    
     
-    if (!is_Path(cmd1) || !is_Path(cmd2)){      //check paths
-        printf("command not found");
-        return;
-    }
-    if (num_pipes==2){
-        cmd3=get_tokens(CMDS[2]);
-        if(!is_Path(cmd3)){
-            printf("command not found");
-            return; 
+    //get paths and list of cmd tokenlists
+    for (int i=0; i<num_pipes+1; i++){
+        tokenlist * cmd= get_tokens(CMDS[i]);
+        if (!is_Path(cmd)){
+            printf("Bash: command not found: %s",cmd->items[0]);
+            return;
         }
+        cmd_list[i]=cmd;
     }
-    
-    int p_fds1[2];  //this one works for |
-    int p_fds2[2];  //trying to use this for ||
-    
-    pipe(p_fds1);
+    //support bg processing
+    if (bg){
+        time(&bg_starts[num_bg_jobs]);
+        
+        update_jobs(tokens);
+    }
+
+    //make 2 pipes
+    int pfds1[2];
+    int pfds2[2];
+    pipe(pfds1);
+    pipe(pfds2);
+
 
     pid_t pid1=fork();
     if (pid1==0){
-        printf("in child 1\n");
-        close(p_fds1[0]); //close unused end of pipe
-        close(1);
-        dup(p_fds1[1]);    //redirect output & cmd 1
-        execv(cmd1->items[0],cmd1->items);
+        //first command
+        close(pfds1[0]);    //close input end of first pipe
+        
+        close(1);           //close std out
+        dup(pfds1[1]);      //redirect to  output end of first pipe
+        close(pfds1[1]);    //close output first pipe
+
+        close(pfds2[0]);    //close 2nd pipe
+        close(pfds2[1]);
+
+        execv(cmd_list[0]->items[0],cmd_list[0]->items); //execute first cmd
         exit(1);
     }
 
     pid_t pid2=fork();
     if (pid2==0){
-        printf("in child 2\n");
-
-        //redirect input & cmd 2
-        close(0);
-        dup(p_fds1[0]);
-
-        if (num_pipes==2){ //redirect output for cmd 3
-           
+        //2nd cmd
+        
+        if (num_pipes==2){      //if 3rd command exists, set std.out to 2nd pipes output
             close(1);
-            dup(p_fds1[1]);
+            dup(pfds2[1]);
         }
-        else{
-            close(p_fds1[1]);
-        }
-        execv(cmd2->items[0],cmd2->items);
+
+        close(0);            //close std in
+        dup(pfds1[0]);      //redirect input to input end of first pipe
+        
+
+        close(pfds1[0]);    //close both pipes
+        close(pfds1[1]);
+
+        close(pfds2[0]);
+        close(pfds2[1]);
+
+        execv(cmd_list[1]->items[0],cmd_list[1]->items);  //execute second cmd
 
         exit(1);
     }
-    
-    if (num_pipes==2){        //not working
-        p_fds2[0]=p_fds1[1];
-        pipe(p_fds2);
-        pid_t pid3 = fork();
-        if (pid3==0){
-            printf("in child 3\n");
-            
-            close(p_fds2[1]);
-            close(0);
-            dup(p_fds2[0]);
+   
 
-            execv(cmd3->items[0],cmd3->items);
+    pid_t pid3;
+    if (num_pipes==2){        //if 3rd command  
+
+        pid3 = fork();
+        if (pid3==0){       //3rd cmd
+          
+            close(0);       //close stdin
+            dup(pfds2[0]);  //get input from input of second pipe
+            
+                       
+            close(pfds1[0]);    //close both pipes
+            close(pfds1[1]);
+
+            close(pfds2[0]);
+            close(pfds2[1]);
+
+
+            execv(cmd_list[2]->items[0],cmd_list[2]->items);
             exit(1);
         }
-        close(p_fds2[0]);
-        close(p_fds2[1]);
-        waitpid(pid3,NULL,0);
+        
+     
+      
 
         
     }
     
-    close(p_fds1[0]);
-    close(p_fds1[1]);
+    close(pfds1[0]);       //close first pipe
+    close(pfds1[1]);
+    close(pfds2[0]);      //close 2nd pipe 
+    close(pfds2[1]);
+    
+    if(bg){
+        //if bg processing:update job pid list, print job, continue immediately
+        if (num_pipes==2){
+            bg_list[num_bg_jobs-1]=pid3;    //if 3 cmds, store cmd 3's pid
+        }
+        else{
+            bg_list[num_bg_jobs-1]=pid2;    //otherwise cmd 2's pid
+        }
+        printf("[%i] %i\n",num_bg_jobs,bg_list[num_bg_jobs-1]);
+   
+        }
+              
+              
+    else{   //if no bg, wait for children to finish
+        waitpid(pid1,NULL,0);   //wait for first pids
+        waitpid(pid2,NULL,0);
+        if(num_pipes==2){
+            waitpid(pid3,NULL,0);   //wait for 3rd cmd if exits
+        }
+    }
+    num_pipes=0;    //reset num_pipes
+   
+    
 
-
-    waitpid(pid1,NULL,0);
-    waitpid(pid2,NULL,0);
-    num_pipes=0;
 }
