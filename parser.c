@@ -19,8 +19,10 @@ int main(int argc, char const * argv[])
 	
     while (1)
     {	//getting user input and checking bg jobs
-	    
-        check_background();
+		int counter = 0;
+	    if (counter != 0)
+			check_background();
+		counter++;
         print_Prompt();
 
         char * buffer=get_input();
