@@ -9,6 +9,7 @@ int main(int argc, char const * argv[])
 	NUM_JOBS=0;
 	currentruntime=0;
 	longestruntime=0;
+	
     while (1)
     {	//getting user input and checking bg jobs
 		int counter = 0;
