@@ -19,7 +19,7 @@ bool redirect_tokens(tokenlist *tokens)
       
       iflag = true;
       if (!oflag){
-            stop=i;
+        stop=i;
        }
     }
       
@@ -28,13 +28,14 @@ bool redirect_tokens(tokenlist *tokens)
       output=(char*)malloc(sizeof(tokens->items[i+1]));  
       output = tokens->items[i+1];
       oflag = true;
+      
       if (!iflag){
-            stop=i;
+        stop=i;
       }
     }
     
-
   }
+  
   if (iflag || oflag){
     tokens->items[stop]=NULL;		//if io, update tokenlist accordingly
     tokens->size=stop;
@@ -42,7 +43,10 @@ bool redirect_tokens(tokenlist *tokens)
     return true;
   }
   return false;
+
+
 }
+
 void open_fd()
 {
   //inside fork chld
