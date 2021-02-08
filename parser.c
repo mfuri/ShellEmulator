@@ -13,10 +13,7 @@ int main(int argc, char const * argv[])
     while (1)
     {
       // Gets user input and checks bg jobs
-      int counter = 0;
-      //if (counter != 0)
         check_background();
-      counter++;
       
       // Presents user with prompt and runs command
       // from provided functions
