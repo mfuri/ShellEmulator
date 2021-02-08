@@ -1,5 +1,8 @@
 #include "shell.h"
 
+NUM_JOBS=0;
+currentruntime=0;
+longestruntime=0;
 
 int main(int argc, char const * argv[])
 {
