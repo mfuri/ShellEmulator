@@ -60,6 +60,7 @@ void open_fd()
     else
     {
       printf("Error opening or creating file.\n");
+      return;
     }     
   }
   if(oflag)
@@ -73,6 +74,7 @@ void open_fd()
     else
     {
       printf("Error opening or creating file.\n");
+      return;
     }
           
   }
