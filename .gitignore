@@ -2,3 +2,6 @@
 .DS_Store
 *.o
 *.o
+cd.o
+echo.o
+env_Expand.o
