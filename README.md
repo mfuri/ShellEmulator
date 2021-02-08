@@ -1,7 +1,6 @@
 # COP4610-Proj1
 
 
-
 # List of files:
 -	parser.c
 	-	Main while loop provided for us. Calls external functions from different
@@ -26,6 +25,10 @@
 	-	Expands all tildes when appropriate for every token in the tokenlist.
 -	makefile
 	-	Used to compile program, outputs "shell" executable.
+-	Git Screenshots
+	-	Directory with screenshots of all commits.
+-	gitcommitlog.md
+	-	Log files from "git log" command.
 
 Readme.md and gitcommitlog.md are included in the
 
