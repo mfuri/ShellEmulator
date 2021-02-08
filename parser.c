@@ -66,7 +66,7 @@ int main(int argc, char const * argv[])
             else{
                    //true if bg processing needed, removes & token
                 if (is_bg){
-                    time(&bg_starts[num_bg_jobs]);
+                    time(&BG_STARTS[NUM_JOBS]);
                     update_jobs(tokens);
                 }
 
