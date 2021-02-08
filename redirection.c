@@ -88,10 +88,12 @@ void close_fd()
 
     if(iflag){
         close(ifile);
+        free(input);
     }
 
     if (oflag){
         close(ofile);
+        free(output);
     }
   
 }

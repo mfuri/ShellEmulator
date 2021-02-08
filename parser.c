@@ -13,7 +13,9 @@ int main(int argc, char const * argv[])
     while (1)
     {
       // Gets user input and checks bg jobs
-        check_background();
+      
+      check_background();
+      
       
       // Presents user with prompt and runs command
       // from provided functions
@@ -80,13 +82,19 @@ int main(int argc, char const * argv[])
       // End of While loop if "exit", shell ends and calculates running times
       if(exitshell(tokens) == true)
       {
+            
             check_and_exit();			//waits for bg processes and prints exit statement
+            
+            free(buffer);
+            free_tokens(tokens);
+            
             break;
       }
       
       free(buffer);
       free_tokens(tokens);
     }
+    
     return 0;
 }
 
@@ -111,6 +119,13 @@ void time_command(time_t START,time_t STOP) //checks current run time and update
 // Runs external commands when necessary
 void external_cmd(tokenlist * tokens, bool bg, bool io)
 {
+    char * x[tokens->size + 1];
+    x[0] = tokens->items[0];
+
+    for (int i=1; i < tokens->size; i++)
+    { x[i]=tokens->items[i]; }
+
+    x[tokens->size] = NULL;
     
     //open files before fork
     if(iflag)
@@ -125,7 +140,7 @@ void external_cmd(tokenlist * tokens, bool bg, bool io)
       //in child
       if (io)
       { open_fd(); }
-      int e = execv(tokens->items[0], tokens->items);
+      int e = execv(x[0], x);
     }
     
     else
@@ -193,6 +208,8 @@ void check_background()
       time(&BG_STOP);
       time_command(BG_STARTS[i],BG_STOP);
       printf("[%i]+  %s &\n",i+1,BG_ARGS[i]);
+      free(BG_ARGS[i]);
+
       
       //proccess finished
       new_num--;
@@ -201,8 +218,9 @@ void check_background()
     else
     {
       new_BG_LIST[j]=BG_LIST[i];
+
       new_BG_ARGS[j]=(char*) malloc(sizeof(BG_ARGS[i]));
-      new_BG_ARGS[j]=BG_ARGS[i];
+      strcpy(new_BG_ARGS[j],BG_ARGS[i]);
       j++;
     }
   }
@@ -214,9 +232,13 @@ void check_background()
     for (int i=0;i<NUM_JOBS;i++)
     {
       BG_LIST[i]=new_BG_LIST[i];
-      BG_ARGS[i]=new_BG_ARGS[i];
+      BG_ARGS[i]=(char*) realloc(BG_ARGS[i], sizeof(new_BG_ARGS[i]));
+      strcpy(BG_ARGS[i],new_BG_ARGS[i]);
+      free(new_BG_ARGS[i]);
+
     }
   }
+  
   return;
 }
 
@@ -290,5 +312,7 @@ void check_and_exit()
     time(&SHELL_STOP);                      //ends shell timing
     double shell_time = difftime(SHELL_STOP,SHELL_START);
     printf("Shell ran for %.0f seconds and took %d seconds to execute one command.\n", shell_time, longestruntime);
+    
+
     return;
 }
