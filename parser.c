@@ -202,7 +202,7 @@ void check_background()
     {
       time(&BG_STOP);
       time_command(BG_STARTS[i],BG_STOP);
-      printf("[%i]+  %s &\n",i+1,bg_args[i]);
+      printf("[%i]+  %s &\n",i+1,BG_ARGS[i]);
       
       //proccess finished
       new_num--;
@@ -277,9 +277,9 @@ void update_jobs(tokenlist * tokens)
 
 }
 
-void jobs(tokenlist *tokens){
+void jobs(tokenlist *tokens)
+{
     //output list of active background process
-    //[job #]+ [CMD's pid]  [CMD's cmd line]
 
     for (int i=0;i<NUM_JOBS;i++){
         printf("[%i]+ %i  %s &\n",i+1,BG_LIST[i],BG_ARGS[i]);
@@ -290,10 +290,10 @@ void jobs(tokenlist *tokens){
 void check_and_exit()
 {
     //waits for bg jobs to complete and exits shell
-    while(NUM_JOBS!=0)
-	{
-         waitpid(-1,NULL,0);                 //wait for bg jobs to finish
-         check_background();                 //prints any jobs that just completed/checks those run times
+    while(NUM_JOBS != 0)
+    {
+      waitpid(-1,NULL,0);                 //wait for bg jobs to finish
+      check_background();                 //prints any jobs that just completed/checks those run times
     }
 
     time_command(CMD_START,CMD_STOP);       //checks last cmd's run time
