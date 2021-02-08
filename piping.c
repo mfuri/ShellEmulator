@@ -130,4 +130,5 @@ void pipe_exec()
 
     waitpid(pid1,NULL,0);
     waitpid(pid2,NULL,0);
+    num_pipes=0;
 }
