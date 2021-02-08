@@ -48,19 +48,25 @@ int main(int argc, char const * argv[])
         oflag = false;
 
         if (!get_command(tokens))
-		{
-			bool is_bg = run_background(tokens);
-            bool is_io = redirect_tokens(tokens);
+	{
+		bool is_bg = run_background(tokens);
+            	bool is_io = redirect_tokens(tokens);
+		bool is_pipe=pipe_tokens(tokens);
+		
+		if (is_pipe){
+                
+                pipe_exec(is_bg,tokens);
+                
+            }
 
-            if (!is_Path(tokens))
-			{
+            else if (!is_Path(tokens)){
                 printf("Bash: command not found: %s\n", tokens->items[0]);
             }
-            else
-			{
+
+            else{
                    //true if bg processing needed, removes & token
                 if (is_bg){
-                    time(&BG_STARTS[NUM_JOBS]);
+                    time(&bg_starts[num_bg_jobs]);
                     update_jobs(tokens);
                 }
 
@@ -248,10 +254,20 @@ void update_jobs(tokenlist * tokens){
     
     NUM_JOBS++;
     //update bg cmd line args list
-    char * cmd_loc=strrchr(tokens->items[0],'/')+1;
-    BG_ARGS[NUM_JOBS-1]=(char*)malloc(sizeof(cmd_loc));
-    strcpy(BG_ARGS[NUM_JOBS-1],cmd_loc);
+    char * cmd_loc=strrchr(tokens->items[0],'/');
 
+    if(cmd_loc==NULL){  //if first token has not been expanded
+        //add first token as is
+        printf("\nfirst token is %s\n",tokens->items[0]);
+        bg_args[num_bg_jobs-1]=(char*)malloc(sizeof(tokens->items[0]));
+        strcpy(bg_args[num_bg_jobs-1],tokens->items[0]);
+    }
+    else{   
+        //if first token has been expanded, add cmd only
+        cmd_loc++;
+        bg_args[num_bg_jobs-1]=(char*)malloc(sizeof(cmd_loc));
+        strcpy(bg_args[num_bg_jobs-1],cmd_loc); 
+    }
     for (int i=1;i<tokens->size;i++){
         strcat(BG_ARGS[NUM_JOBS-1]," ");
         strcat(BG_ARGS[NUM_JOBS-1],tokens->items[i]);
