@@ -3,7 +3,7 @@
 
 //piping global vars
 char * CMDS[3];
-int num_pipes=0;
+int NUM_PIPES=0;
 
 
 
@@ -21,17 +21,17 @@ bool pipe_tokens(tokenlist *tokens){
 
     for (int i=0;i<tokens->size;i++){
         if (strcmp("|",tokens->items[i])==0){
-            num_pipes++;
+            NUM_PIPES++;
             new_cmd=true;
             ret=true;
         }
         else{
             if (new_cmd){
-                strcpy(CMDS[num_pipes],tokens->items[i]);
+                strcpy(CMDS[NUM_PIPES],tokens->items[i]);
             }
             else{
-                strcat(CMDS[num_pipes]," ");
-                strcat(CMDS[num_pipes],tokens->items[i]);
+                strcat(CMDS[NUM_PIPES]," ");
+                strcat(CMDS[NUM_PIPES],tokens->items[i]);
             }
             
             
@@ -45,10 +45,10 @@ bool pipe_tokens(tokenlist *tokens){
 
 void pipe_exec(bool bg,tokenlist * tokens)
 {
-    tokenlist * cmd_list[num_pipes+1];    
+    tokenlist * cmd_list[NUM_PIPES+1];    
     
     //get paths and list of cmd tokenlists
-    for (int i=0; i<num_pipes+1; i++){
+    for (int i=0; i<NUM_PIPES+1; i++){
         tokenlist * cmd= get_tokens(CMDS[i]);
         if (!is_Path(cmd)){
             printf("Bash: command not found: %s",cmd->items[0]);
@@ -58,7 +58,7 @@ void pipe_exec(bool bg,tokenlist * tokens)
     }
     //support bg processing
     if (bg){
-        time(&bg_starts[num_bg_jobs]);
+        time(&BG_STARTS[NUM_JOBS]);
         
         update_jobs(tokens);
     }
@@ -90,7 +90,7 @@ void pipe_exec(bool bg,tokenlist * tokens)
     if (pid2==0){
         //2nd cmd
         
-        if (num_pipes==2){      //if 3rd command exists, set std.out to 2nd pipes output
+        if (NUM_PIPES==2){      //if 3rd command exists, set std.out to 2nd pipes output
             close(1);
             dup(pfds2[1]);
         }
@@ -112,7 +112,7 @@ void pipe_exec(bool bg,tokenlist * tokens)
    
 
     pid_t pid3;
-    if (num_pipes==2){        //if 3rd command  
+    if (NUM_PIPES==2){        //if 3rd command  
 
         pid3 = fork();
         if (pid3==0){       //3rd cmd
@@ -145,13 +145,13 @@ void pipe_exec(bool bg,tokenlist * tokens)
     
     if(bg){
         //if bg processing:update job pid list, print job, continue immediately
-        if (num_pipes==2){
-            bg_list[num_bg_jobs-1]=pid3;    //if 3 cmds, store cmd 3's pid
+        if (NUM_PIPES==2){
+            BG_LIST[NUM_JOBS-1]=pid3;    //if 3 cmds, store cmd 3's pid
         }
         else{
-            bg_list[num_bg_jobs-1]=pid2;    //otherwise cmd 2's pid
+            BG_LIST[NUM_JOBS-1]=pid2;    //otherwise cmd 2's pid
         }
-        printf("[%i] %i\n",num_bg_jobs,bg_list[num_bg_jobs-1]);
+        printf("[%i] %i\n",NUM_JOBS,BG_LIST[NUM_JOBS-1]);
    
         }
               
@@ -159,11 +159,11 @@ void pipe_exec(bool bg,tokenlist * tokens)
     else{   //if no bg, wait for children to finish
         waitpid(pid1,NULL,0);   //wait for first pids
         waitpid(pid2,NULL,0);
-        if(num_pipes==2){
+        if(NUM_PIPES==2){
             waitpid(pid3,NULL,0);   //wait for 3rd cmd if exits
         }
     }
-    num_pipes=0;    //reset num_pipes
+    NUM_PIPES=0;    //reset num_pipes
    
     
 
