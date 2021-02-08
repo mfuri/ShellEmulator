@@ -16,7 +16,8 @@ time_t BG_STARTS[10];
 extern int ifile, ofile;
 extern char * input;
 extern char * output;
-extern bool iflag, oflag;
+extern bool iflag
+extern bool oflag;
 
 
 int main(int argc, char const * argv[])
