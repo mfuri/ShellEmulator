@@ -14,7 +14,7 @@ int main(int argc, char const * argv[])
     {
       // Gets user input and checks bg jobs
       int counter = 0;
-      if (counter != 0)
+      //if (counter != 0)
         check_background();
       counter++;
       
