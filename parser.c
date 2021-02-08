@@ -147,7 +147,7 @@ void external_cmd(tokenlist * tokens, bool bg, bool io)
       if (bg)
       {
         //if bg processing:update job pid list, print job, continue immediately
-        BG_LIST[NUM_JOBS-1]=pid;
+        BG_LIST[NUM_JOBS-1] = pid;
         printf("[%i] %i\n",NUM_JOBS,BG_LIST[NUM_JOBS-1]);
         return;
       }
@@ -186,80 +186,89 @@ bool get_command(tokenlist *tokens)
   return false;
 }
 
+//Checks if a process is in the BG
 void check_background()
 {
-//for process in list of bg processes
-	pid_t new_BG_LIST[10];
-	char* new_BG_ARGS[10];
-	int new_num = NUM_JOBS;
-
-	int j=0;
-	for (int i = 0; i < NUM_JOBS; i++){
-		pid_t status=waitpid(BG_LIST[i],NULL,WNOHANG);
-		if (status!=0){
-			time(&BG_STOP);
-            		time_command(BG_STARTS[i],BG_STOP);
-			printf("[%i]+  %s &\n",i+1,BG_ARGS[i]);
-			//proccess finished
-			new_num--;
-
-		}
- 
-		else{
-			new_BG_LIST[j]=BG_LIST[i];
-			new_BG_ARGS[j]=(char*) malloc(sizeof(BG_ARGS[i]));
-			new_BG_ARGS[j]=BG_ARGS[i];
-			j++;
-		  
-			}
-	}
-	   
-	if (NUM_JOBS!=new_num){
-		NUM_JOBS=new_num;
-
-		for (int i=0;i<NUM_JOBS;i++){
-			BG_LIST[i]=new_BG_LIST[i];
-			
-			BG_ARGS[i]=new_BG_ARGS[i];
-		}
-	}
-	
-	return;
-	 
-}
-
-bool run_background(tokenlist * tokens){
-//returns true if user requested background processing
-	if (tokens->items[tokens->size-1][0]=='&'){
-		tokens->items[tokens->size-1]=NULL;    //remove & token
-		tokens->size--;
-		return true;
-	}
-	return false;
-
-}
-
-void update_jobs(tokenlist * tokens){
+  pid_t new_BG_LIST[10];
+  char* new_BG_ARGS[10];
+  int new_num = NUM_JOBS;
+  
+  int j=0;
+  for (int i = 0; i < NUM_JOBS; i++)
+  {
+    pid_t status=waitpid(BG_LIST[i],NULL,WNOHANG);
     
+    if (status!=0)
+    {
+      time(&BG_STOP);
+      time_command(BG_STARTS[i],BG_STOP);
+      printf("[%i]   Done            %s\n",i+1,BG_ARGS[i]);
+      
+      //proccess finished
+      new_num--;
+    }
+    
+    else
+    {
+      new_BG_LIST[j]=BG_LIST[i];
+      new_BG_ARGS[j]=(char*) malloc(sizeof(BG_ARGS[i]));
+      new_BG_ARGS[j]=BG_ARGS[i];
+      j++;
+    }
+  }
+  
+  if (NUM_JOBS!=new_num)
+  {
+    NUM_JOBS=new_num;
+    
+    for (int i=0;i<NUM_JOBS;i++)
+    {
+      BG_LIST[i]=new_BG_LIST[i];
+      BG_ARGS[i]=new_BG_ARGS[i];
+    }
+  }
+  return;
+}
+
+bool run_background(tokenlist * tokens)
+{
+  //returns true if user requested background processing
+  if (tokens->items[tokens->size-1][0] == '&')
+  {
+    tokens->items[tokens->size-1]=NULL;    //remove & token
+    tokens->size--;
+    return true;
+  }
+  return false;
+}
+
+// Updates array of jobs
+void update_jobs(tokenlist * tokens)
+{
     NUM_JOBS++;
     //update bg cmd line args list
+    
     char * cmd_loc=strrchr(tokens->items[0],'/');
 
-    if(cmd_loc==NULL){  //if first token has not been expanded
+    if(cmd_loc==NULL)
+    {  //if first token has not been expanded
         //add first token as is
-        
-        BG_ARGS[NUM_JOBS]=(char*)malloc(sizeof(tokens->items[0]));
-        strcpy(BG_ARGS[NUM_JOBS-1],tokens->items[0]);
+        printf("\nfirst token is %s\n", tokens->items[0]);
+        BG_ARGS[NUM_JOBS] = (char*)malloc(sizeof(tokens->items[0]));
+        strcpy(BG_ARGS[NUM_JOBS-1], tokens->items[0]);
     }
-    else{   
+    else
+    {
         //if first token has been expanded, add cmd only
         cmd_loc++;
-        BG_ARGS[NUM_JOBS-1]=(char*)malloc(sizeof(cmd_loc));
-        strcpy(BG_ARGS[NUM_JOBS-1],cmd_loc); 
+        BG_ARGS[NUM_JOBS-1] = (char*) malloc(sizeof(cmd_loc));
+        strcpy(BG_ARGS[NUM_JOBS-1], cmd_loc); 
     }
-    for (int i=1;i<tokens->size;i++){
-        strcat(BG_ARGS[NUM_JOBS-1]," ");
-        strcat(BG_ARGS[NUM_JOBS-1],tokens->items[i]);
+  
+    for (int i=1;i<tokens->size;i++)
+      {
+        strcat(BG_ARGS[NUM_JOBS-1], " ");
+        strcat(BG_ARGS[NUM_JOBS-1], tokens->items[i]);
     }
 
 
