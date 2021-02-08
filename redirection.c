@@ -8,7 +8,7 @@
 
 bool redirect_tokens(tokenlist *tokens)
 {
-  int stop=0; //finds end point of cmd and arg tokens
+  int stop; //finds end point of cmd and arg tokens
   
   for(int i = 0; i < tokens->size ; i++)
   {
@@ -18,8 +18,8 @@ bool redirect_tokens(tokenlist *tokens)
       input = tokens->items[i+1];  
       
       iflag = true;
-        
-      stop=i;
+      if (!oflag){
+        stop=i;
        }
     }
       
@@ -29,12 +29,13 @@ bool redirect_tokens(tokenlist *tokens)
       output = tokens->items[i+1];
       oflag = true;
       
-      stop=i;
+      if (!iflag){
+        stop=i;
       }
     }
     
-
   }
+  
   if (iflag || oflag){
     tokens->items[stop]=NULL;		//if io, update tokenlist accordingly
     tokens->size=stop;
@@ -42,7 +43,10 @@ bool redirect_tokens(tokenlist *tokens)
     return true;
   }
   return false;
+
+
 }
+
 void open_fd()
 {
   //inside fork chld
