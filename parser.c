@@ -107,7 +107,7 @@ void time_command(time_t START,time_t STOP) //checks current run time and update
 {
     currentruntime = difftime(STOP,START);
 
-    if(longestruntime<currentruntime)
+    if(longestruntime < currentruntime)
     {   
         longestruntime = currentruntime;
     }
@@ -283,7 +283,7 @@ void check_and_exit()
     time_command(CMD_START,CMD_STOP);       //checks last cmd's run time
     time(&SHELL_STOP);                      //ends shell timing
     double shell_time = difftime(SHELL_STOP,SHELL_START);
-    printf("Shell ran for %f seconds and took %d seconds to execute one command.\n", shell_time, longestruntime);
+    printf("Shell ran for %.0f seconds and took %d seconds to execute one command.\n", shell_time, longestruntime);
     return;
 }
 
