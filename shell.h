@@ -29,7 +29,11 @@ void free_tokens(tokenlist *tokens);
 
 /**Provided functions and struct**/
 
-
+//GLOBAL VARIABLES
+int ifile, ofile;
+char * input;
+char * output;
+bool iflag, oflag;
 
 
 
@@ -44,10 +48,8 @@ void update_jobs(tokenlist * tokens);
 
 
 /****From External Files****/
-//bool redirection(tokenlist *tokens);
 bool exitshell(tokenlist *tokens);
-void time_command(time_t START, time_t STOP);    
-//bool redirection(tokenlist * tokens);
+void time_command(time_t START, time_t STOP);
 
 //file io
 bool redirect_tokens(tokenlist *tokens);

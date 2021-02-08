@@ -12,11 +12,6 @@ char * BG_ARGS[10];
 time_t BG_STARTS[10];
 
 
-//GLOBAL VARIABLES
-int ifile, ofile;
-char * input;
-char * output;
-bool iflag, oflag;
 
 int main(int argc, char const * argv[])
 {
@@ -120,7 +115,7 @@ void time_command(time_t START,time_t STOP) //checks current run time and update
 }
 
 
-void external_cmd(tokenlist * tokens,bool bg, bool io){ 
+void external_cmd(tokenlist * tokens, bool bg, bool io){
 
     char *x[tokens->size+1];
     x[0]=tokens->items[0];
@@ -294,7 +289,7 @@ void check_and_exit()
 
 
 /**I/O REDIRECTION**/
-bool redirect_tokens(tokenlist *tokens)
+/*bool redirect_tokens(tokenlist *tokens)
 {
   int stop; //finds end point of cmd and arg tokens
   
@@ -372,6 +367,6 @@ void close_fd()
 		close(ofile);
 	}
   
-}
+}*/
 
 
