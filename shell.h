@@ -36,7 +36,7 @@ char * output;
 bool iflag, oflag;
 
 /**GLOBAL PROCESS VARIABLES**/
-int NUM_JOBS = 10;
+int NUM_JOBS = 0;
 pid_t BG_LIST[10];
 char * BG_ARGS[10];
 time_t BG_STARTS[10];
