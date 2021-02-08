@@ -12,6 +12,13 @@ char * BG_ARGS[10];
 time_t BG_STARTS[10];
 
 
+//GLOBAL VARIABLES
+extern int ifile, ofile;
+extern char * input;
+extern char * output;
+extern bool iflag, oflag;
+
+
 int main(int argc, char const * argv[])
 {
     time(&SHELL_START);
