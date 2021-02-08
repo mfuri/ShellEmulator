@@ -8,7 +8,7 @@
 
 bool redirect_tokens(tokenlist *tokens)
 {
-  int stop; //finds end point of cmd and arg tokens
+  int stop=0; //finds end point of cmd and arg tokens
   
   for(int i = 0; i < tokens->size ; i++)
   {
@@ -18,8 +18,8 @@ bool redirect_tokens(tokenlist *tokens)
       input = tokens->items[i+1];  
       
       iflag = true;
-      if (!oflag){
-            stop=i;
+        
+      stop=i;
        }
     }
       
@@ -28,8 +28,8 @@ bool redirect_tokens(tokenlist *tokens)
       output=(char*)malloc(sizeof(tokens->items[i+1]));  
       output = tokens->items[i+1];
       oflag = true;
-      if (!iflag){
-            stop=i;
+      
+      stop=i;
       }
     }
     
