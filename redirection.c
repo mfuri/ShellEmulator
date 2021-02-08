@@ -1,4 +1,4 @@
-#include "shell.h"
+/*#include "shell.h"
 
 //globals
 //int ifile, ofile;
@@ -84,4 +84,4 @@ void close_fd()
         close(ofile);
     }
   
-}
+}*/
