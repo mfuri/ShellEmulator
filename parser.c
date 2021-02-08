@@ -139,7 +139,7 @@ void external_cmd(tokenlist * tokens, bool bg, bool io){
         ifile = open(input, O_RDONLY);
     }
     if (oflag){
-        ofile = open(output, O_WRONLY | O_CREAT| O_TRUNC);
+        ofile = open(output, O_WRONLY | O_CREAT| O_TRUNC, 0777);
     }
 
     pid_t pid=fork();
