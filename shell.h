@@ -35,8 +35,13 @@ char * input;
 char * output;
 bool iflag, oflag;
 
+/**GLOBAL PROCESS VARIABLES**/
+int NUM_JOBS = 10;
+pid_t BG_LIST[10];
+char * BG_ARGS[10];
+time_t BG_STARTS[10];
 
-//piping globals
+
 
 
 void external_cmd(tokenlist * tokens, bool bg, bool io);
