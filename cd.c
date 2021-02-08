@@ -21,6 +21,6 @@ void cd (tokenlist * tokens)
 		return;
 		
 	}
-   printf("cd: No such file or directory: %s", tokens->items[1]);
+   printf("cd: No such file or directory: %s\n", tokens->items[1]);
    return;
 }

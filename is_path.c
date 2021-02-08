@@ -2,13 +2,12 @@
 
 bool is_Path(tokenlist * tokens)
 {
-	int i;
+	/*int i;
 	for (int i = 0; i < strlen(tokens->items[0]); i++)
 	{
 		if (strchr(tokens->items[0],'/') != NULL)
 			return true;
-			
-	}
+	}*/
 	
 	char * path = getenv("PATH");
 
@@ -38,8 +37,7 @@ bool is_Path(tokenlist * tokens)
 		free(pathcopy);
 		return true;
 	}
-
-	//printf("Bash: command not found: %s\n", tokens->items[0]);
+	
 	free(fpath);
 	free(pathcopy);
 	return false;

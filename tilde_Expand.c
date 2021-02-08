@@ -1,7 +1,7 @@
 #include "shell.h"
 
 void tilde_Expand(tokenlist *tokens)
-{             
+{
 	int i;
 	for (i = 0; i < tokens->size; i++)
 	{

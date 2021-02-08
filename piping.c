@@ -3,7 +3,7 @@
 
 //piping global vars
 char * CMDS[3];
-int NUM_PIPES=0;
+int NUM_PIPES = 0;
 
 
 
