@@ -1,4 +1,5 @@
 
+
 #include "shell.h"
 
 //piping global vars
@@ -163,8 +164,15 @@ void pipe_exec(bool bg,tokenlist * tokens)
             waitpid(pid3,NULL,0);   //wait for 3rd cmd if exits
         }
     }
-    NUM_PIPES=0;    //reset num_pipes
-   
+    for (int i=0; i<NUM_PIPES+1;i++){       //free cmd_list tokenlists
+        free_tokens(cmd_list[i]);
+    }   
     
+    for (int i=0; i<3; i++){                //free CMDS
+        free(CMDS[i]);
+    }
+    NUM_PIPES=0;    //reset num_pipes
+
+        
 
 }
