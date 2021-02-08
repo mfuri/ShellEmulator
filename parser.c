@@ -255,14 +255,14 @@ void update_jobs(tokenlist * tokens){
     if(cmd_loc==NULL){  //if first token has not been expanded
         //add first token as is
         printf("\nfirst token is %s\n",tokens->items[0]);
-        bg_args[num_bg_jobs-1]=(char*)malloc(sizeof(tokens->items[0]));
-        strcpy(bg_args[num_bg_jobs-1],tokens->items[0]);
+        BG_ARGS[NUM_JOBS]=(char*)malloc(sizeof(tokens->items[0]));
+        strcpy(BG_ARGS[NUM_JOBS-1],tokens->items[0]);
     }
     else{   
         //if first token has been expanded, add cmd only
         cmd_loc++;
-        bg_args[num_bg_jobs-1]=(char*)malloc(sizeof(cmd_loc));
-        strcpy(bg_args[num_bg_jobs-1],cmd_loc); 
+        BG_ARGS[NUM_JOBS-1]=(char*)malloc(sizeof(cmd_loc));
+        strcpy(BG_ARGS[NUM_JOBS-1],cmd_loc); 
     }
     for (int i=1;i<tokens->size;i++){
         strcat(BG_ARGS[NUM_JOBS-1]," ");
