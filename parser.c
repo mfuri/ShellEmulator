@@ -171,7 +171,7 @@ bool get_command(tokenlist *tokens)
     }
 
     if (strcmp(tokens->items[0],"echo")==0){
-        echo(tokens);
+		echo_Function(tokens);
         return true;
     }
 

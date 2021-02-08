@@ -45,7 +45,8 @@ bool pipe_tokens(tokenlist *tokens){
 
 }
 
-void pipe_exec(){
+void pipe_exec()
+{
 //this works for one pipe but not 2. I tried added 3rd command implemntation not sure whats going wrong. 
 //since theirs multiple forks im planning to just have this call is_Path and then skip the calls to is_Path and external cmd
 //neads to add flag for bg processing
@@ -129,4 +130,4 @@ void pipe_exec(){
 
     waitpid(pid1,NULL,0);
     waitpid(pid2,NULL,0);
-
+}

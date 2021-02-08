@@ -67,7 +67,7 @@ void env_Expand(tokenlist *tokens);
 
 /**Built-Ins**/
 void cd(tokenlist * tokens);
-void echo(tokenlist * tokens);
+void echo_Function(tokenlist * tokens);
 void check_and_exit(void);
 void jobs(tokenlist *tokens);
 bool is_Path(tokenlist *tokens);
