@@ -5,7 +5,7 @@ obj = $(src:.c=.o)
 #LDFLAGS = -lGL -lglut -lpng -lz -lm
 
 shell: $(obj)
-	$(CC) ${CFLAGS} -o $@ $^
+	gcc -std=gnu11 -o shell *.c
 
 .PHONY: clean
 clean:
