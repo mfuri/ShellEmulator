@@ -1,5 +1,4 @@
 
-
 #include "shell.h"
 
 //piping global vars
@@ -13,12 +12,23 @@ bool pipe_tokens(tokenlist *tokens){
 //return true if needs piping
 //call in main loop before calling pipe_exec
     
-    for (int i=0;i<3;i++){
-       CMDS[i]=(char*)malloc(sizeof(tokens->items)); 
-    }
-    bool new_cmd=true;
+    bool ret=false;
 
-    bool ret=false;;
+    for (int i=0;i<tokens->size;i++){
+       if (strcmp("|",tokens->items[i])==0){
+            ret=true;
+            break;
+       }
+    }
+
+    if (!ret){
+        return false;
+    }
+
+
+    CMDS[3]; 
+    
+    bool new_cmd=true;
 
     for (int i=0;i<tokens->size;i++){
         if (strcmp("|",tokens->items[i])==0){
@@ -28,6 +38,7 @@ bool pipe_tokens(tokenlist *tokens){
         }
         else{
             if (new_cmd){
+                CMDS[NUM_PIPES]=(char*)malloc(tokens->size*(strlen(tokens->items[i])+1)); 
                 strcpy(CMDS[NUM_PIPES],tokens->items[i]);
             }
             else{
@@ -40,9 +51,17 @@ bool pipe_tokens(tokenlist *tokens){
         }
      }   
     
-    return ret;
+    for (int i=0;i<NUM_PIPES+1;i++){
+        printf("\ncommand %i = %s\n",i+1, CMDS[i]);
+    }
+
+    return true;
 
 }
+
+
+
+
 
 void pipe_exec(bool bg,tokenlist * tokens)
 {
@@ -164,11 +183,11 @@ void pipe_exec(bool bg,tokenlist * tokens)
             waitpid(pid3,NULL,0);   //wait for 3rd cmd if exits
         }
     }
-    for (int i=0; i<NUM_PIPES+1;i++){       //free cmd_list tokenlists
+    for (int i=0; i<NUM_PIPES+1;i++){
         free_tokens(cmd_list[i]);
     }   
     
-    for (int i=0; i<3; i++){                //free CMDS
+    for (int i=0; i<NUM_PIPES+1; i++){
         free(CMDS[i]);
     }
     NUM_PIPES=0;    //reset num_pipes
