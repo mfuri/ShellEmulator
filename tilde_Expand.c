@@ -9,27 +9,15 @@ void tilde_Expand(tokenlist *tokens)
 		//Expands using wordexp
 		if (tokens->items[i][0] == '~' && tokens->items[i] != NULL)
 			{
-				/*tokens->items[i]++;
-				char * home = getenv("HOME");
-				char * buf = (char *) malloc(strlen(tokens->items[i])+strlen(home));
 				
-				strcpy(buf, home);
-				strcat(buf, tokens->items[i]);
+				wordexp_t p;
+				int size;
+				wordexp(tokens->items[i], &p, 0);
 				
-				tokens->items[i] = (char *) realloc(tokens->items[i], strlen(tokens->items[i])+strlen(home));
+				tokens->items[i] = (char *) realloc(tokens->items[i], (strlen(tokens->items[i]) + strlen(p.we_wordv[0])) * sizeof(char));
 				
-				strcpy(tokens->items[i], buf);
-				
-				free(buf);*/
-				
-				//wordexp_t p;
-				//int size;
-				//wordexp(tokens->items[i], &p, 0);
-				
-				//tokens->items[i] = (char *) realloc(tokens->items[i], (strlen(tokens->items[i]) + strlen(p.we_wordv[0])) * sizeof(char));
-				
-				//strcpy(tokens->items[i], p.we_wordv[0]);
-				//wordfree(&p);
+				strcpy(tokens->items[i], p.we_wordv[0]);
+				wordfree(&p);
 			}
 	}
 	return;
