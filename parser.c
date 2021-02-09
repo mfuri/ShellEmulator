@@ -219,7 +219,7 @@ void check_background()
     {
       new_BG_LIST[j]=BG_LIST[i];
 
-      new_BG_ARGS[j]=(char*) malloc(sizeof(char) * (strlen(BG_ARGS[i]) + 1);
+      new_BG_ARGS[j]=(char*) malloc(sizeof(char) * (strlen(BG_ARGS[i]) + 1));
       strcpy(new_BG_ARGS[j],BG_ARGS[i]);
       j++;
     }
