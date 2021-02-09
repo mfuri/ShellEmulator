@@ -42,7 +42,7 @@ char * BG_ARGS[10];
 time_t BG_STARTS[10];
 
 /**GLOBAL TIME VARIABLES**/
-time_t CMD_START, CMD_STOP,SHELL_START, SHELL_STOP, BG_STOP;                                             //global variables
+time_t CMD_START, CMD_STOP,SHELL_START, SHELL_STOP, BG_STOP;
 int currentruntime;
 int longestruntime;
 

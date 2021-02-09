@@ -119,14 +119,7 @@ void time_command(time_t START,time_t STOP) //checks current run time and update
 // Runs external commands when necessary
 void external_cmd(tokenlist * tokens, bool bg, bool io)
 {
-    /*char * x[tokens->size + 1];
-    x[0] = tokens->items[0];
 
-    for (int i=1; i < tokens->size; i++)
-    { x[i]=tokens->items[i]; }
-
-    x[tokens->size] = NULL;*/
-    
     //open files before fork
     if(iflag)
     { ifile = open(input, O_RDONLY); }
@@ -208,7 +201,6 @@ void check_background()
       time(&BG_STOP);
       time_command(BG_STARTS[i],BG_STOP);
       printf("[%i]+  %s &\n",i+1,BG_ARGS[i]);
-      //free(BG_ARGS[i]);
 
       
       //proccess finished
@@ -234,8 +226,6 @@ void check_background()
       BG_LIST[i]=new_BG_LIST[i];
       BG_ARGS[i]=(char*) realloc(BG_ARGS[i], sizeof(char) * (strlen(new_BG_ARGS[i]) + 1));
       strcpy(BG_ARGS[i],new_BG_ARGS[i]);
-      //free(new_BG_ARGS[i]);
-
     }
   }
   

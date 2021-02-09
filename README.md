@@ -74,4 +74,8 @@ Readme.md and gitcommitlog.md are included in the
 	as link files to create the "shell" executable.
 	
 -	To remove all created object files, run "make clean".
-	
+
+# Extra Credit
+-	Shellception
+	-	Shell is able to be called within the shell and exits the new shell in a progressive order,
+		getting the time stats for each closed shell before the main shell is closed.

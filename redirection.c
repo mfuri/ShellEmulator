@@ -1,11 +1,5 @@
 #include "shell.h"
 
-//globals
-//int ifile, ofile;
-//char * input, * output;
-//bool iflag, oflag = false;
-
-
 bool redirect_tokens(tokenlist *tokens)
 {
   int stop; //finds end point of cmd and arg tokens
@@ -82,8 +76,6 @@ void open_fd()
     }
           
   }
-    
-    //return true;
 }
 // parent 
 void close_fd()
