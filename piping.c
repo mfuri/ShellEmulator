@@ -50,10 +50,11 @@ bool pipe_tokens(tokenlist *tokens){
         }
      }   
     
+    /*
     for (int i=0;i<NUM_PIPES+1;i++){
         printf("\ncommand %i = %s\n",i+1, CMDS[i]);
     }
-
+    */
     return true;
 
 }

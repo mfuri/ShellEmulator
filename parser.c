@@ -208,7 +208,7 @@ void check_background()
       time(&BG_STOP);
       time_command(BG_STARTS[i],BG_STOP);
       printf("[%i]+  %s &\n",i+1,BG_ARGS[i]);
-      free(BG_ARGS[i]);
+      //free(BG_ARGS[i]);
 
       
       //proccess finished
@@ -234,7 +234,7 @@ void check_background()
       BG_LIST[i]=new_BG_LIST[i];
       BG_ARGS[i]=(char*) realloc(BG_ARGS[i], sizeof(char) * (strlen(new_BG_ARGS[i]) + 1));
       strcpy(BG_ARGS[i],new_BG_ARGS[i]);
-      free(new_BG_ARGS[i]);
+      //free(new_BG_ARGS[i]);
 
     }
   }
@@ -266,14 +266,14 @@ void update_jobs(tokenlist * tokens)
     {  //if first token has not been expanded
         //add first token as is
        
-        BG_ARGS[NUM_JOBS] = (char*)malloc(sizeof(char) * (strlen(tokens->items[0]) + 1));
+        BG_ARGS[NUM_JOBS] = (char*)malloc(tokens->size * sizeof(char)*(strlen(tokens->items[0]) + 1));
         strcpy(BG_ARGS[NUM_JOBS-1], tokens->items[0]);
     }
     else
     {
         //if first token has been expanded, add cmd only
         cmd_loc++;
-        BG_ARGS[NUM_JOBS-1] = (char*) malloc(sizeof(char) * (strlen(cmd_loc)+1));
+        BG_ARGS[NUM_JOBS-1] = (char*) malloc(tokens->size * sizeof(char) * (strlen(cmd_loc)+1));
         strcpy(BG_ARGS[NUM_JOBS-1], cmd_loc); 
     }
   
