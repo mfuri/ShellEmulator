@@ -9,7 +9,7 @@ void env_Expand(tokenlist *tokens)
 		if (tokens->items[i][0] == '$')
 		{
 			//remove $ char from token and get corresponding env var
-			char * buf = (char * ) malloc(sizeof(tokens->items[i])-1);
+			char * buf = (char * ) malloc(sizeof(char) * strlen(tokens->items[i]));
 			strcpy(buf, &tokens->items[i][1]);
 			
 			
