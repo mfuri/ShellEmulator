@@ -56,10 +56,12 @@ void open_fd()
     if(ifile != -1 )       //anything left of > is an output, so create or overwrite fil
     {
           dup2(ifile, STDIN_FILENO);
+          close(ifile);
     }
     else
     {
       printf("Error opening or creating file.\n");
+      free(input);
       exit(1);
     }     
   }
@@ -69,11 +71,13 @@ void open_fd()
     if(ofile != -1)     //anything left of > is an output, so create or overwrite fil
     {
         dup2(ofile, STDOUT_FILENO);
+        close(ofile);
     }
 
     else
     {
       printf("Error opening or creating file.\n");
+      free(output);
       exit(1);
     }
           
@@ -87,13 +91,19 @@ void close_fd()
 
 
     if(iflag){
-        close(ifile);
+        
         free(input);
+        if (ifile!=-1){
+          close(ifile);
+        }
     }
 
     if (oflag){
-        close(ofile);
+        
         free(output);
+        if(ofile!=-1){
+          close(ofile);
+        }
     }
   
 }
