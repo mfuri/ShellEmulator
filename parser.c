@@ -140,7 +140,7 @@ void external_cmd(tokenlist * tokens, bool bg, bool io)
       //in child
       if (io)
       { open_fd(); }
-      int e = execv(tokens->items[0], tokens->items);
+      execv(tokens->items[0], tokens->items);
     }
     
     else
