@@ -164,13 +164,16 @@ void pipe_exec(bool bg,tokenlist * tokens)
             waitpid(pid3,NULL,0);   //wait for 3rd cmd if exits
         }
     }
-    for (int i=0; i<NUM_PIPES+1;i++){       //free cmd_list tokenlists
-        free_tokens(cmd_list[i]);
-    }   
+         //free cmd_list tokenlists
+        free_tokens(cmd_list);
+	free_tokens(cmd);
+	
+	
     
     for (int i=0; i<3; i++){                //free CMDS
         free(CMDS[i]);
     }
+	
     NUM_PIPES=0;    //reset num_pipes
 
         
