@@ -13,6 +13,8 @@
 	-	Expands all environmental variables found within a token list.
 -	is_Path.c
 	-	Determines whether a command is located in $PATH.
+	piping.c
+		Handles pipe execution.
 -	print_Prompt.c
 	-	Prints the user's name, 
 -	provided_Functions.c
@@ -50,7 +52,22 @@ Readme.md and gitcommitlog.md are included in the
 	-	time_command()
 	-	external_cmd()
 	- 	shell.h
--	
+	
+-	Samantha McLendon contributed to:
+	-	echo_Function()
+	- 	cd()
+	- 	is_Path()
+	-	check_and_exit()
+	-	external_cmd()
+	-	get_command()
+	-	piping.c (all functions)
+	-	redirection.c (all functions)
+	-	check_background()
+	-	run_background()
+	-	update_jobs()
+	-	exitshell()
+	-	time_command()
+	- 	jobs()
 
 # How to compile with Makefile
 -	To compile, the command is "make shell". This will create object files as well
