@@ -14,7 +14,7 @@ bool redirect_tokens(tokenlist *tokens)
   {
     if(strcmp("<", tokens->items[i])==0)
     { 
-      input = (char*) malloc(sizeof(char) * strlen(tokens->items[i+1]));
+		input = (char*) malloc(sizeof(char) * (strlen(tokens->items[i+1]) +1));
       strcpy(input,tokens->items[i+1]);
       
       iflag = true;
@@ -25,7 +25,7 @@ bool redirect_tokens(tokenlist *tokens)
       
     else if(strcmp(">", tokens->items[i])==0)
     {
-		output=(char*)malloc(sizeof(char) * strlen(tokens->items[i+1]));
+		output=(char*)malloc(sizeof(char) * (strlen(tokens->items[i+1]) +1));
 		strcpy(output,tokens->items[i+1]);
       oflag = true;
       

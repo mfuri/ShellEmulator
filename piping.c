@@ -12,9 +12,10 @@ bool pipe_tokens(tokenlist *tokens){
 //return true if needs piping
 //call in main loop before calling pipe_exec
     
-    bool ret=false;
+    bool ret = false;
 
-    for (int i=0;i<tokens->size;i++){
+    for (int i=0;i<tokens->size;i++)
+	{
        if (strcmp("|",tokens->items[i])==0){
             ret=true;
             break;

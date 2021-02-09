@@ -52,7 +52,7 @@ int main(int argc, char const * argv[])
       {
         bool is_bg = run_background(tokens);
         bool is_io = redirect_tokens(tokens);
-        bool is_pipe=pipe_tokens(tokens);
+        bool is_pipe = pipe_tokens(tokens);
         
           if (is_pipe)
           {
@@ -219,7 +219,7 @@ void check_background()
     {
       new_BG_LIST[j]=BG_LIST[i];
 
-      new_BG_ARGS[j]=(char*) malloc(sizeof(char) * strlen(BG_ARGS[i]));
+      new_BG_ARGS[j]=(char*) malloc(sizeof(char) * (strlen(BG_ARGS[i]) + 1);
       strcpy(new_BG_ARGS[j],BG_ARGS[i]);
       j++;
     }
@@ -232,7 +232,7 @@ void check_background()
     for (int i=0;i<NUM_JOBS;i++)
     {
       BG_LIST[i]=new_BG_LIST[i];
-      BG_ARGS[i]=(char*) realloc(BG_ARGS[i], sizeof(char) * strlen(new_BG_ARGS[i]));
+      BG_ARGS[i]=(char*) realloc(BG_ARGS[i], sizeof(char) * (strlen(new_BG_ARGS[i]) + 1));
       strcpy(BG_ARGS[i],new_BG_ARGS[i]);
       free(new_BG_ARGS[i]);
 
@@ -266,14 +266,14 @@ void update_jobs(tokenlist * tokens)
     {  //if first token has not been expanded
         //add first token as is
        
-        BG_ARGS[NUM_JOBS] = (char*)malloc(sizeof(char) * strlen(tokens->items[0]));
+        BG_ARGS[NUM_JOBS] = (char*)malloc(sizeof(char) * (strlen(tokens->items[0]) + 1));
         strcpy(BG_ARGS[NUM_JOBS-1], tokens->items[0]);
     }
     else
     {
         //if first token has been expanded, add cmd only
         cmd_loc++;
-        BG_ARGS[NUM_JOBS-1] = (char*) malloc(sizeof(char) * strlen(cmd_loc));
+        BG_ARGS[NUM_JOBS-1] = (char*) malloc(sizeof(char) * (strlen(cmd_loc)+1));
         strcpy(BG_ARGS[NUM_JOBS-1], cmd_loc); 
     }
   
