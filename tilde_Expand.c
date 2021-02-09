@@ -26,7 +26,7 @@ void tilde_Expand(tokenlist *tokens)
 				int size;
 				wordexp(tokens->items[i], &p, 0);
 				
-				tokens->items[i] = (char *) realloc(tokens->items[i], strlen(tokens->items[i]) + strlen(p.we_wordv[0]));
+				tokens->items[i] = (char *) realloc(tokens->items[i], strlen(tokens->items[i]) + strlen(p.we_wordv[0]) * sizeof(char));
 				
 				strcpy(tokens->items[i], p.we_wordv[0]);
 				wordfree(&p);
