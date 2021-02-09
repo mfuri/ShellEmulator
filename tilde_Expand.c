@@ -7,7 +7,7 @@ void tilde_Expand(tokenlist *tokens)
 	{
 		//Check to see if first character is ~
 		//Expands using wordexp
-		if (tokens->items[i][0] == '~')
+		if (tokens->items[i][0] == '~' && tokens->items[i] != NULL)
 			{
 				/*tokens->items[i]++;
 				char * home = getenv("HOME");
