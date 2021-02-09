@@ -69,15 +69,17 @@ void pipe_exec(bool bg,tokenlist * tokens)
     
     //get paths and list of cmd tokenlists
     for (int i=0; i<NUM_PIPES+1; i++){
-        tokenlist * cmd= get_tokens(CMDS[i]);
-        if (!is_Path(cmd)){
+        tokenlist * cmd = get_tokens(CMDS[i]);
+        if (!is_Path(cmd))
+		{
             printf("Bash: command not found: %s",cmd->items[0]);
             return;
         }
         cmd_list[i]=cmd;
     }
     //support bg processing
-    if (bg){
+    if (bg)
+	{
         time(&BG_STARTS[NUM_JOBS]);
         
         update_jobs(tokens);
@@ -183,13 +185,19 @@ void pipe_exec(bool bg,tokenlist * tokens)
             waitpid(pid3,NULL,0);   //wait for 3rd cmd if exits
         }
     }
+<<<<<<< HEAD
     for (int i=0; i<NUM_PIPES+1;i++){
+=======
+	for (int i = 0; i < NUM_PIPES+1; i++)
+>>>>>>> 0ebb4713fcb1b8bfc7696be48dfc03771d9fb47c
         free_tokens(cmd_list[i]);
-    }   
+	
+	
     
     for (int i=0; i<NUM_PIPES+1; i++){
         free(CMDS[i]);
     }
+	
     NUM_PIPES=0;    //reset num_pipes
 
         

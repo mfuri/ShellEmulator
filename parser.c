@@ -140,7 +140,7 @@ void external_cmd(tokenlist * tokens, bool bg, bool io)
       //in child
       if (io)
       { open_fd(); }
-      int e = execv(tokens->items[0], tokens->items);
+      execv(tokens->items[0], tokens->items);
     }
     
     else
@@ -294,7 +294,7 @@ void jobs(tokenlist *tokens)
     //output list of active background process
 
     for (int i=0;i<NUM_JOBS;i++){
-        printf("[%i]+ %i  %s &\n",i+1,BG_LIST[i],BG_ARGS[i]);
+        printf("[%i]+ %i  %s &\n", i + 1, BG_LIST[i], BG_ARGS[i]);
 
     }
 }
