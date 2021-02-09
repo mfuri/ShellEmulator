@@ -69,7 +69,7 @@ void pipe_exec(bool bg,tokenlist * tokens)
     for (int i=0; i<NUM_PIPES+1; i++){
         tokenlist * cmd = get_tokens(CMDS[i]);
         if (!is_Path(cmd))
-		{
+	{
             printf("Bash: command not found: %s",cmd->items[0]);
             return;
         }
