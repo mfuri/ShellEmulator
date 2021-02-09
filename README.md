@@ -74,4 +74,9 @@ Readme.md and gitcommitlog.md are included in the
 	as link files to create the "shell" executable.
 	
 -	To remove all created object files, run "make clean".
-	
+
+# Bugs
+-	There appear to be some memory leaks in the implementation of piping with background processing. Sometimes these commands may not run properly. We attempted debugging using valgrind and several different implementations of memory allocation. It appears the errors originate in pipe_exec()'s call to update_jobs(). The bug first appeared today as we were finalizing our code organization. It appears somewhat inconsistently. 
+
+# Extra Credit
+-	Shellception: Shell can execute from within itself.
