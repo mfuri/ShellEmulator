@@ -119,13 +119,13 @@ void time_command(time_t START,time_t STOP) //checks current run time and update
 // Runs external commands when necessary
 void external_cmd(tokenlist * tokens, bool bg, bool io)
 {
-    char * x[tokens->size + 1];
+    /*char * x[tokens->size + 1];
     x[0] = tokens->items[0];
 
     for (int i=1; i < tokens->size; i++)
     { x[i]=tokens->items[i]; }
 
-    x[tokens->size] = NULL;
+    x[tokens->size] = NULL;*/
     
     //open files before fork
     if(iflag)
@@ -140,7 +140,7 @@ void external_cmd(tokenlist * tokens, bool bg, bool io)
       //in child
       if (io)
       { open_fd(); }
-      int e = execv(x[0], x);
+      int e = execv(tokens->items[0], tokens->items);
     }
     
     else

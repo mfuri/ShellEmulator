@@ -32,4 +32,5 @@ void tilde_Expand(tokenlist *tokens)
 				wordfree(&p);
 			}
 	}
+	return;
 }
