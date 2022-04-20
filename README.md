@@ -1,4 +1,4 @@
-# COP4610-Proj1
+# Shell Emulator in C - COP4610-Proj1
 
 
 # List of files:
