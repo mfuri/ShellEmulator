@@ -6,3 +6,4 @@ cd.o
 echo.o
 env_Expand.o
 shell
+*.o
