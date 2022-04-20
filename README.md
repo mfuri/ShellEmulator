@@ -44,7 +44,7 @@ Readme.md and gitcommitlog.md are included in the
 	-	env_Expand()
 	-	shell.h
 
--	James Hill contributed to:
+-	Teammate 1 contributed to:
 	- 	checks_and_exit()
 	- 	redirect_tokens()
 	- 	openfd()
@@ -53,7 +53,7 @@ Readme.md and gitcommitlog.md are included in the
 	-	external_cmd()
 	- 	shell.h
 	
--	Samantha McLendon contributed to:
+-	Teammate 2 contributed to:
 	-	echo_Function()
 	- 	cd()
 	- 	is_Path()
